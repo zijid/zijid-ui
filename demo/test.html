@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zijid UI 测试</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1a202c;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        .test-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 16px 0;
+        }
+        .test-section p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .demo-controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        .preview-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 32px;
+            min-height: 300px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .demo-window {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            min-width: 400px;
+            min-height: 300px;
+            position: absolute;
+        }
+        .window-header {
+            background: #f8fafc;
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+        .window-btn.minimize { background: #ffbd2e; }
+        .window-btn.maximize { background: #27c93f; }
+        .window-btn.close { background: #ff5f56; }
+        .window-content {
+            padding: 16px;
+            line-height: 1.6;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+        .input-group label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        .input-group input {
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .input-group input:hover {
+            border-color: #d1d5db;
+        }
+        .input-group input:disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-section">
+            <h2>窗口组件测试</h2>
+            <p>测试窗口组件的拖拽功能</p>
+            <div class="demo-controls">
+                <button class="btn btn-primary" onclick="toggleWindow()">打开窗口</button>
+                <button class="btn btn-secondary" onclick="resetWindow()">重置位置</button>
+            </div>
+            <div class="preview-box" id="preview-box">
+                <div id="demo-window" class="demo-window" style="display: none; left: 50px; top: 50px;">
+                    <div class="window-header" onmousedown="startDrag(event)">
+                        我的窗口 - Zijid UI
+                        <div class="window-controls">
+                            <button class="window-btn minimize" onclick="minimizeWindow()"></button>
+                            <button class="window-btn maximize" onclick="maximizeWindow()"></button>
+                            <button class="window-btn close" onclick="toggleWindow()"></button>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <p>欢迎使用 ZWindow 组件！</p>
+                        <ul>
+                            <li><strong>拖拽标题栏</strong>：可以通过拖拽标题栏来移动窗口</li>
+                            <li><strong>点击最小化按钮</strong>：将窗口最小化</li>
+                            <li><strong>点击最大化按钮</strong>：将窗口最大化</li>
+                            <li><strong>点击关闭按钮</strong>：关闭窗口</li>
+                        </ul>
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="toggleWindow()">关闭窗口</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>输入框组件测试</h2>
+            <p>测试输入框组件的基本功能</p>
+            <div class="demo-controls">
+                <div class="input-group">
+                    <label>用户名</label>
+                    <input type="text" placeholder="请输入用户名" />
+                </div>
+                <div class="input-group">
+                    <label>密码</label>
+                    <input type="password" placeholder="请输入密码" />
+                </div>
+                <div class="input-group">
+                    <label>邮箱</label>
+                    <input type="email" placeholder="请输入邮箱" />
+                </div>
+            </div>
+            <div class="preview-box">
+                <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                    <p>这是一个输入框组件的演示</p>
+                    <div style="display: flex; flex-direction: column; gap: 12px; width: 300px;">
+                        <div class="input-group">
+                            <label>数字</label>
+                            <input type="number" placeholder="请输入数字" />
+                        </div>
+                        <div class="input-group">
+                            <label>邮箱</label>
+                            <input type="email" placeholder="请输入邮箱" />
+                        </div>
+                        <div class="input-group">
+                            <label>禁用状态</label>
+                            <input type="text" placeholder="禁用的输入框" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>按钮组件测试</h2>
+            <p>测试按钮组件的不同样式和状态</p>
+            <div class="demo-controls">
+                <button class="btn btn-primary">主要按钮</button>
+                <button class="btn btn-secondary">次要按钮</button>
+                <button class="btn btn-primary" disabled>禁用按钮</button>
+            </div>
+            <div class="preview-box">
+                <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                    <p>不同样式的按钮</p>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary">主要按钮</button>
+                        <button class="btn btn-secondary">次要按钮</button>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary" style="width: 120px;">宽按钮</button>
+                        <button class="btn btn-secondary" style="width: 120px;">宽按钮</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let windowPosition = { x: 50, y: 50 };
+        let isDragging = false;
+        let dragStart = { pointerX: 0, pointerY: 0, x: 0, y: 0 };
+
+        function toggleWindow() {
+            const window = document.getElementById('demo-window');
+            if (window.style.display === 'none') {
+                window.style.display = 'block';
+            } else {
+                window.style.display = 'none';
+            }
+        }
+
+        function resetWindow() {
+            windowPosition = { x: 50, y: 50 };
+            updateWindowPosition();
+        }
+
+        function minimizeWindow() {
+            alert('最小化功能');
+        }
+
+        function maximizeWindow() {
+            alert('最大化功能');
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            const header = e.target;
+            const window = header.closest('.demo-window');
+            if (!window) return;
+            
+            const rect = window.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            
+            dragStart = {
+                pointerX: e.clientX,
+                pointerY: e.clientY,
+                x: windowPosition.x,
+                y: windowPosition.y
+            };
+            
+            const onMouseMove = (e) => {
+                e.preventDefault();
+                const x = dragStart.x + (e.clientX - dragStart.pointerX);
+                const y = dragStart.y + (e.clientY - dragStart.pointerY);
+                
+                // 限制窗口在容器范围内
+                const container = window.parentElement;
+                if (container) {
+                    const containerRect = container.getBoundingClientRect();
+                    const maxX = containerRect.width - rect.width;
+                    const maxY = containerRect.height - rect.height;
+                    
+                    windowPosition.x = Math.max(0, Math.min(x, maxX));
+                    windowPosition.y = Math.max(0, Math.min(y, maxY));
+                } else {
+                    windowPosition.x = Math.max(0, x);
+                    windowPosition.y = Math.max(0, y);
+                }
+                
+                updateWindowPosition();
+            };
+            
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+
+        function updateWindowPosition() {
+            const window = document.getElementById('demo-window');
+            if (window) {
+                window.style.left = windowPosition.x + 'px';
+                window.style.top = windowPosition.y + 'px';
+            }
+        }
+    </script>
+</body>
+</html>
