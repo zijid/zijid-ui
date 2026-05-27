@@ -1,7 +1,9 @@
 <template>
   <li class="z-tree__node">
     <button class="z-tree__row" :class="{ 'z-tree__row--active': item.id === selectedId }" type="button" @click="emit('select', item.id)">
-      <span class="z-tree__twisty" @click.stop="open = !open">{{ item.children?.length ? (open ? '▾' : '▸') : '' }}</span>
+      <span class="z-tree__twisty" @click.stop="open = !open">
+        <ZIcon v-if="item.children?.length" :name="open ? 'chevron-down' : 'chevron-right'" :size="20" :stroke-width="3" />
+      </span>
       <ZIcon v-if="item.icon" :name="item.icon" :size="16" />
       <span>{{ item.label }}</span>
     </button>

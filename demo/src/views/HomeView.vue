@@ -4,17 +4,17 @@
       <h1>Zijid UI</h1>
       <p>基于 Vue 3 的 Windows 10 桌面组件库</p>
     </div>
-    
+
     <!-- 安装指南 -->
     <div class="install-section">
       <h2>快速开始</h2>
       <p>安装 Zijid UI 即可获得完整的 Windows 10 桌面应用组件</p>
-      <div class="code-block">
-        <pre><code>npm install zijid-ui</code></pre>
+      <div style="margin-bottom: 24px;">
+        <ZCodeBlock code="npm install zijid-ui" language="bash" />
       </div>
-      <button class="btn btn-primary" @click="copyInstall">复制安装命令</button>
+      <ZButton variant="primary" @click="copyInstall">复制安装命令</ZButton>
     </div>
-    
+
     <!-- 组件展示 -->
     <div class="component-grid">
       <div v-for="component in components" :key="component.name" class="component-card" @click="navigateTo(component.path)">
@@ -23,7 +23,7 @@
         <p>{{ component.description }}</p>
       </div>
     </div>
-    
+
     <!-- 特性介绍 -->
     <div class="features-section">
       <h2>特性</h2>
@@ -31,7 +31,7 @@
         <div class="feature-item">
           <div class="feature-icon">🎨</div>
           <h3>现代化设计</h3>
-          <p>遵循 Windows 11 设计语言，提供美观的界面</p>
+          <p>遵循 Windows 10 设计语言，提供美观的界面</p>
         </div>
         <div class="feature-item">
           <div class="feature-icon">⚡</div>
@@ -39,7 +39,7 @@
           <p>基于 Vue 3 Composition API，轻量且快速</p>
         </div>
         <div class="feature-item">
-          <div class="feature-icon">🛠️</div>
+          <div class="feature-icon">🔧</div>
           <h3>易于使用</h3>
           <p>提供完整的 TypeScript 支持，开箱即用</p>
         </div>
@@ -55,45 +55,47 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { ZButton } from 'zijid-ui'
+import { ZCodeBlock } from 'zijid-ui'
+
+const router = useRouter()
 
 const components = ref([
   { name: 'Button', icon: '🔘', description: '按钮组件', path: '/button' },
   { name: 'Input', icon: '📝', description: '输入框组件', path: '/input' },
   { name: 'Select', icon: '📋', description: '选择器组件', path: '/select' },
+  { name: 'Checkbox', icon: '☑️', description: '复选框组件', path: '/checkbox' },
+  { name: 'Radio', icon: '🔘', description: '单选框组件', path: '/radio' },
+  { name: 'Switch', icon: '🔄', description: '开关组件', path: '/switch' },
+  { name: 'Slider', icon: '🎚️', description: '滑块组件', path: '/slider' },
+  { name: 'Progress', icon: '📊', description: '进度条组件', path: '/progress' },
+  { name: 'Textarea', icon: '📋', description: '文本域组件', path: '/textarea' },
+  { name: 'Search Box', icon: '🔍', description: '搜索框组件', path: '/search-box' },
   { name: 'Dialog', icon: '💬', description: '对话框组件', path: '/dialog' },
   { name: 'Window', icon: '🪟', description: '窗口组件', path: '/window' },
   { name: 'Tabs', icon: '📑', description: '标签页组件', path: '/tabs' },
-  { name: 'Checkbox', icon: '☑️', description: '复选框组件', path: '/checkbox' },
-  { name: 'Radio', icon: '🔘', description: '单选框组件', path: '/radio' },
-  { name: 'Icon', icon: '⭐', description: '图标组件', path: '/icon' },
-  { name: 'Progress', icon: '📊', description: '进度条组件', path: '/progress' },
-  { name: 'Slider', icon: '🎚️', description: '滑块组件', path: '/slider' },
-  { name: 'Switch', icon: '🔌', description: '开关组件', path: '/switch' },
-  { name: 'Textarea', icon: '📄', description: '文本域组件', path: '/textarea' },
-  { name: 'Select', icon: '📝', description: '选择框组件', path: '/select' },
+  { name: 'Icon', icon: '🖼️', description: '图标组件', path: '/icon' },
   { name: 'Tree', icon: '🌳', description: '树形组件', path: '/tree' },
   { name: 'List', icon: '📋', description: '列表组件', path: '/list' },
-  { name: 'Menu', icon: '📁', description: '菜单组件', path: '/menu' },
-  { name: 'Dropdown', icon: '📥', description: '下拉组件', path: '/dropdown' },
+  { name: 'Menu', icon: '📋', description: '菜单组件', path: '/menu' },
+  { name: 'Dropdown', icon: '📜', description: '下拉组件', path: '/dropdown' },
   { name: 'Tooltip', icon: '💡', description: '提示组件', path: '/tooltip' },
   { name: 'Panel', icon: '📦', description: '面板组件', path: '/panel' },
-  { name: 'Toolbar', icon: '🛠️', description: '工具栏组件', path: '/toolbar' },
-  { name: 'Status Bar', icon: '📊', description: '状态栏组件', path: '/statusbar' },
-  { name: 'Scroll Area', icon: '📜', description: '滚动区域组件', path: '/scrollarea' },
-  { name: 'Search Box', icon: '🔍', description: '搜索框组件', path: '/searchbox' },
-  { name: 'Desktop', icon: '💻', description: '桌面组件', path: '/desktop' },
-  { name: 'Desktop Icon', icon: '📁', description: '桌面图标组件', path: '/desktopicon' },
-  { name: 'Start Menu', icon: '🎯', description: '开始菜单组件', path: '/startmenu' },
-  { name: 'Taskbar', icon: '⚙️', description: '任务栏组件', path: '/taskbar' },
-  { name: 'Context Menu', icon: '📋', description: '右键菜单组件', path: '/contextmenu' },
-  { name: 'Splitter', icon: '📐', description: '分割器组件', path: '/splitter' },
+  { name: 'Toolbar', icon: '🔧', description: '工具栏组件', path: '/toolbar' },
+  { name: 'Status Bar', icon: '📊', description: '状态栏组件', path: '/status-bar' },
+  { name: 'Scroll Area', icon: '📜', description: '滚动区域组件', path: '/scroll-area' },
+  { name: 'Context Menu', icon: '📋', description: '右键菜单组件', path: '/context-menu' },
+  { name: 'Splitter', icon: '🔀', description: '分割器组件', path: '/splitter' },
   { name: 'Toast', icon: '🔔', description: '通知组件', path: '/toast' },
-  { name: 'Window', icon: '🪟', description: '窗口组件', path: '/window' },
+  { name: 'Desktop', icon: '🖥️', description: '桌面组件', path: '/desktop' },
+  { name: 'Desktop Icon', icon: '📋', description: '桌面图标组件', path: '/desktop-icon' },
+  { name: 'Start Menu', icon: '🎯', description: '开始菜单组件', path: '/start-menu' },
+  { name: 'Taskbar', icon: '⚙️', description: '任务栏组件', path: '/taskbar' },
 ])
 
 const navigateTo = (path: string) => {
-  // 这里可以使用 Vue Router 进行导航
-  console.log('Navigate to:', path)
+  router.push(path)
 }
 
 const copyInstall = () => {
@@ -151,46 +153,6 @@ const copyInstall = () => {
   color: #64748b;
   line-height: 1.6;
   margin-bottom: 24px;
-}
-
-.code-block {
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
-  overflow-x: auto;
-}
-
-.code-block pre {
-  margin: 0;
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 14px;
-  color: #2d3748;
-}
-
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-primary {
-  background: #667eea;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #5a67d8;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
 .component-grid {

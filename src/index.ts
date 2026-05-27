@@ -1,32 +1,29 @@
-import type { App, Plugin } from 'vue'
+﻿import type { App, Plugin } from 'vue'
 import './styles/index.css'
 
 import ZButton from './components/button/ZButton.vue'
 import ZCheckbox from './components/checkbox/ZCheckbox.vue'
+import ZCodeBlock from './components/code-block/ZCodeBlock.vue'
 import ZContextMenu from './components/context-menu/ZContextMenu.vue'
-import ZDesktop from './components/desktop/ZDesktop.vue'
 import ZDesktopIcon from './components/desktop-icon/ZDesktopIcon.vue'
 import ZDialog from './components/dialog/ZDialog.vue'
 import ZDropdown from './components/dropdown/ZDropdown.vue'
 import ZIcon from './components/icon/ZIcon.vue'
 import ZInput from './components/input/ZInput.vue'
+import ZLayout from './components/layout/ZLayout.vue'
 import ZList from './components/list/ZList.vue'
 import ZMenu from './components/menu/ZMenu.vue'
-import ZPanel from './components/panel/ZPanel.vue'
 import ZProgress from './components/progress/ZProgress.vue'
 import ZRadio from './components/radio/ZRadio.vue'
-import ZScrollArea from './components/scroll-area/ZScrollArea.vue'
 import ZSearchBox from './components/search-box/ZSearchBox.vue'
 import ZSelect from './components/select/ZSelect.vue'
-import ZStartMenu from './components/start-menu/ZStartMenu.vue'
 import ZSlider from './components/slider/ZSlider.vue'
-import ZSplitter from './components/splitter/ZSplitter.vue'
 import ZStatusBar from './components/status-bar/ZStatusBar.vue'
 import ZSwitch from './components/switch/ZSwitch.vue'
 import ZTabs from './components/tabs/ZTabs.vue'
-import ZTaskbar from './components/taskbar/ZTaskbar.vue'
 import ZTextarea from './components/textarea/ZTextarea.vue'
 import ZToast from './components/toast/ZToast.vue'
+import ZToastContainer from './components/toast/ZToastContainer.vue'
 import ZToolbar from './components/toolbar/ZToolbar.vue'
 import ZTooltip from './components/tooltip/ZTooltip.vue'
 import ZTree from './components/tree/ZTree.vue'
@@ -37,38 +34,42 @@ export type { IconName } from './components/icon/icons'
 export type { ListItem } from './components/list/ZList.vue'
 export type { MenuItem } from './components/menu/ZMenu.vue'
 export type { SelectOption } from './components/select/ZSelect.vue'
+export type { SelectGroup } from './components/select/ZSelect.vue'
 export type { TabItem } from './components/tabs/ZTabs.vue'
 export type { TreeItem } from './components/tree/ZTree.vue'
 export type { ManagedWindow } from './composables/useWindowManager'
+export type { SearchItem } from './components/search-box/ZSearchBox.vue'
 export { useWindowManager } from './composables/useWindowManager'
+export { useToast } from './composables/useToast'
+export type { ToastOptions } from './composables/useToast'
+export { globalWindowLayerManager, createWindowLayerManager, useWindowLayers } from './composables/useWindowLayers'
+export { generateWindowId } from './composables/useWindowId'
+
 
 const components = [
   ZButton,
   ZCheckbox,
+  ZCodeBlock,
   ZContextMenu,
-  ZDesktop,
   ZDesktopIcon,
   ZDialog,
   ZDropdown,
   ZIcon,
   ZInput,
+  ZLayout,
   ZList,
   ZMenu,
-  ZPanel,
   ZProgress,
   ZRadio,
-  ZScrollArea,
   ZSearchBox,
   ZSelect,
-  ZStartMenu,
   ZSlider,
-  ZSplitter,
   ZStatusBar,
   ZSwitch,
   ZTabs,
-  ZTaskbar,
   ZTextarea,
   ZToast,
+  ZToastContainer,
   ZToolbar,
   ZTooltip,
   ZTree,
@@ -79,30 +80,27 @@ export {
   iconNames,
   ZButton,
   ZCheckbox,
+  ZCodeBlock,
   ZContextMenu,
-  ZDesktop,
   ZDesktopIcon,
   ZDialog,
   ZDropdown,
   ZIcon,
   ZInput,
+  ZLayout,
   ZList,
   ZMenu,
-  ZPanel,
   ZProgress,
   ZRadio,
-  ZScrollArea,
   ZSearchBox,
   ZSelect,
-  ZStartMenu,
   ZSlider,
-  ZSplitter,
   ZStatusBar,
   ZSwitch,
   ZTabs,
-  ZTaskbar,
   ZTextarea,
   ZToast,
+  ZToastContainer,
   ZToolbar,
   ZTooltip,
   ZTree,

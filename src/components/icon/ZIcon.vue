@@ -5,7 +5,7 @@
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2"
+    :stroke-width="strokeWidth"
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
@@ -25,10 +25,12 @@ const props = withDefaults(
     name: IconName
     size?: number | string
     color?: string
+    strokeWidth?: number
   }>(),
   {
     size: 16,
-    color: 'currentColor'
+    color: 'currentColor',
+    strokeWidth: 2
   }
 )
 

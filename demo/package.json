@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "playwright": "^1.60.0",
     "vue": "^3.4.0",
     "vue-router": "^4.2.0",
     "zijid-ui": "file:../zijid-ui-0.1.0.tgz"

@@ -19,27 +19,96 @@ code {
     monospace;
 }
 
+/* ============================================
+   Demo Page Layout
+   ============================================ */
+.demo-page {
+  padding: 32px 40px 80px;
+  max-width: 1000px;
+}
+
+.demo-page > .desc {
+  color: #666;
+  margin-bottom: 36px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.demo-page > h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 8px;
+}
+
+/* ============================================
+   Demo Section
+   ============================================ */
 .demo-section {
-  margin-bottom: 30px;
-  padding: 20px;
+  margin-bottom: 40px;
+  padding: 28px 32px;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eaeef2;
 }
 
 .demo-section h2 {
   margin-bottom: 20px;
   color: #2c3e50;
-  font-size: 18px;
+  font-size: 17px;
+  font-weight: 600;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
 }
 
+.demo-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #444;
+}
+
+.demo-section > p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* ============================================
+   Preview Box - the live demo area
+   ============================================ */
+.preview-box {
+  background: #f9f9f9;
+  padding: 32px;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid #e8e8e8;
+  min-height: 48px;
+}
+
+.demo-controls {
+  background: #f9f9f9;
+  padding: 24px 32px;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .demo-row {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  align-items: center;
+  margin-bottom: 32px;
 }
 
 .demo-group {
@@ -55,7 +124,33 @@ code {
   font-style: italic;
 }
 
-/* Desktop demo specific styles */
+/* ============================================
+   ZCodeBlock Spacing (from component library)
+   ============================================ */
+.z-code-block {
+  margin-top: 32px;
+  margin-bottom: 36px;
+}
+
+/* When code block is last in a section, give it some breathing room below */
+.demo-section > .z-code-block:last-child {
+  margin-bottom: 12px;
+}
+
+/* Extra spacing when sections follow a code block */
+.z-code-block + .demo-section {
+  margin-top: 40px;
+}
+
+/* Ensures gap between preview and code */
+.preview-box + .z-code-block,
+.demo-controls + .z-code-block {
+  margin-top: 40px;
+}
+
+/* ============================================
+   Desktop demo specific styles
+   ============================================ */
 .desktop-demo {
   height: 500px;
   position: relative;
@@ -64,24 +159,78 @@ code {
   overflow: hidden;
 }
 
-.z-desktop {
-  height: 100%;
+/* ============================================
+   ApiTable Spacing - ensure tables have breathing room
+   ============================================ */
+.api-table-wrapper {
+  overflow-x: auto;
+  margin: 0;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
 }
 
-.z-taskbar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+/* Ensure the api-table sections have proper spacing from surrounding content */
+.demo-section .api-section {
+  margin: 28px 0;
 }
 
-/* Responsive adjustments */
+.demo-section .api-section:first-child {
+  margin-top: 4px;
+}
+
+.demo-section .api-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Add extra bottom padding when the last item is an API table */
+.demo-section:has(.api-section:last-child) {
+  padding-bottom: 36px;
+}
+
+/* ============================================
+   Section variants
+   ============================================ */
+.demo-page > .demo-section:last-child,
+.demo-container > .demo-section:last-child {
+  border-bottom: none !important;
+  padding-bottom: 32px;
+}
+
+/* ============================================
+   Home page container
+   ============================================ */
+.home-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 40px;
+}
+
+/* ============================================
+   Responsive adjustments
+   ============================================ */
 @media (max-width: 768px) {
-  .app-container {
-    padding: 10px;
+  .demo-page {
+    padding: 20px 16px 60px;
   }
-  
+
+  .demo-section {
+    padding: 20px 16px;
+  }
+
+  .preview-box {
+    padding: 20px;
+  }
+
   .demo-row {
     flex-direction: column;
+  }
+
+  .api-table th,
+  .api-table td {
+    padding: 10px 16px !important;
+  }
+
+  .home-container {
+    padding: 20px 16px;
   }
 }

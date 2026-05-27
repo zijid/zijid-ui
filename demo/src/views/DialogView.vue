@@ -1,172 +1,147 @@
 <template>
-  <div class="demo-container">
+  <div class="demo-page">
+    <h1>ZDialog 对话框</h1>
+    <p class="desc">Windows 10 风格对话框，支持 type 属性区分提示等级，按钮颜色自动匹配。</p>
+
     <div class="demo-section">
-      <h2>Dialog 组件展示</h2>
-      <p>Windows 10 风格的对话框样式和交互</p>
-      
-      <div class="demo-controls">
-        <div class="dialog-group">
-          <ZButton variant="primary" @click="showDefaultDialog">打开默认对话框</ZButton>
-          <ZButton variant="default" @click="showInfoDialog">打开信息对话框</ZButton>
-          <ZButton variant="danger" @click="showErrorDialog">打开错误对话框</ZButton>
-        </div>
-      </div>
-      
-      <div class="demo-controls">
-        <div class="dialog-group">
-          <ZButton @click="showConfirmDialog">确认对话框</ZButton>
-          <ZButton variant="primary" disabled>禁用按钮</ZButton>
-        </div>
-      </div>
-      
+      <h2>不同类型</h2>
       <div class="preview-box">
-        <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-          <p>演示区域 - 对话框组件</p>
-          <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-            <ZButton variant="primary" @click="showDefaultDialog">默认对话框</ZButton>
-            <ZButton variant="default" @click="showInfoDialog">信息对话框</ZButton>
-            <ZButton variant="danger" @click="showErrorDialog">错误对话框</ZButton>
-          </div>
-        </div>
+        <ZButton @click="showInfo">信息</ZButton>
+        <ZButton type="primary" @click="showSuccess">成功</ZButton>
+        <ZButton type="warning" @click="showWarning">警告</ZButton>
+        <ZButton type="danger" @click="showError">错误</ZButton>
       </div>
+      <ZCodeBlock :code="basicCode" language="vue" />
     </div>
-    
-    <!-- 默认对话框 -->
-    <ZDialog v-model:open="defaultDialogOpen" title="默认对话框">
-      <template #body>
-        <p>这是一个默认的对话框示例。</p>
-        <p>您可以在这里放置任何内容。</p>
-      </template>
+
+    <div class="demo-section">
+      <h2>不同尺寸</h2>
+      <div class="preview-box">
+        <ZButton @click="showSmall">小尺寸</ZButton>
+        <ZButton @click="showMedium">中尺寸</ZButton>
+        <ZButton @click="showLarge">大尺寸</ZButton>
+      </div>
+      <ZCodeBlock :code="sizeCode" language="vue" />
+    </div>
+
+    <!-- 信息 -->
+    <ZDialog v-model="infoOpen" title="提示" type="info" size="small">
+      <p>这是一条普通信息提示。</p>
       <template #footer>
-        <ZButton @click="defaultDialogOpen = false">确定</ZButton>
-        <ZButton variant="primary" @click="defaultDialogOpen = false">确认</ZButton>
+        <ZButton type="primary" @click="infoOpen = false">确定</ZButton>
       </template>
     </ZDialog>
-    
-    <!-- 信息对话框 -->
-    <ZDialog v-model:open="infoDialogOpen" title="信息">
-      <template #body>
-        <p>这是一条信息提示。</p>
-        <p>操作已成功完成。</p>
-      </template>
+
+    <!-- 成功 -->
+    <ZDialog v-model="successOpen" title="操作成功" type="success" size="small">
+      <p>文件已成功保存。</p>
       <template #footer>
-        <ZButton variant="primary" @click="infoDialogOpen = false">确定</ZButton>
+        <ZButton type="primary" @click="successOpen = false">确定</ZButton>
       </template>
     </ZDialog>
-    
-    <!-- 错误对话框 -->
-    <ZDialog v-model:open="errorDialogOpen" title="错误">
-      <template #body>
-        <p>操作失败！</p>
-        <p>请检查您的输入并重试。</p>
-      </template>
+
+    <!-- 警告 -->
+    <ZDialog v-model="warningOpen" title="确认删除" type="warning">
+      <p>确定要删除这个文件吗？此操作无法撤销。</p>
       <template #footer>
-        <ZButton @click="errorDialogOpen = false">取消</ZButton>
-        <ZButton variant="danger" @click="errorDialogOpen = false">重试</ZButton>
+        <ZButton @click="warningOpen = false">取消</ZButton>
+        <ZButton type="warning" @click="warningOpen = false">确认</ZButton>
       </template>
     </ZDialog>
-    
-    <!-- 确认对话框 -->
-    <ZDialog v-model:open="confirmDialogOpen" title="确认操作">
-      <template #body>
-        <p>您确定要执行此操作吗？</p>
-        <p>此操作无法撤销。</p>
-      </template>
+
+    <!-- 错误 -->
+    <ZDialog v-model="errorOpen" title="操作失败" type="error" size="small">
+      <p>请检查输入后重试。</p>
       <template #footer>
-        <ZButton @click="confirmDialogOpen = false">取消</ZButton>
-        <ZButton variant="primary" @click="handleConfirm">确认</ZButton>
+        <ZButton @click="errorOpen = false">取消</ZButton>
+        <ZButton type="danger" @click="errorOpen = false">重试</ZButton>
       </template>
     </ZDialog>
+
+    <!-- 小尺寸 -->
+    <ZDialog v-model="smallOpen" title="小对话框" type="info" size="small">
+      <p>内容区域较小的对话框。</p>
+    </ZDialog>
+
+    <!-- 中尺寸 -->
+    <ZDialog v-model="mediumOpen" title="中对话框" type="info" size="medium">
+      <p>中等大小的对话框，适用于大多数场景。</p>
+      <template #footer>
+        <ZButton @click="mediumOpen = false">取消</ZButton>
+        <ZButton type="primary" @click="mediumOpen = false">确定</ZButton>
+      </template>
+    </ZDialog>
+
+    <!-- 大尺寸 -->
+    <ZDialog v-model="largeOpen" title="大对话框" type="info" size="large">
+      <p>较大的对话框，适合展示更多内容。</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; padding: 8px 0;">
+        <p>内容行 1</p>
+        <p>内容行 2</p>
+        <p>内容行 3</p>
+      </div>
+      <template #footer>
+        <ZButton @click="largeOpen = false">取消</ZButton>
+        <ZButton type="primary" @click="largeOpen = false">确定</ZButton>
+      </template>
+    </ZDialog>
+
+    <!-- API 参考 -->
+    <div class="demo-section">
+      <h2>API 参考</h2>
+      <ApiTable :props="dialogProps" :events="dialogEvents" :slots="dialogSlots" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ZButton, ZDialog } from 'zijid-ui'
+import { ZCodeBlock } from 'zijid-ui'
+import ApiTable from '../components/ApiTable.vue'
 
-// 对话框状态
-const defaultDialogOpen = ref(false)
-const infoDialogOpen = ref(false)
-const errorDialogOpen = ref(false)
-const confirmDialogOpen = ref(false)
+const infoOpen = ref(false)
+const successOpen = ref(false)
+const warningOpen = ref(false)
+const errorOpen = ref(false)
+const smallOpen = ref(false)
+const mediumOpen = ref(false)
+const largeOpen = ref(false)
 
-// 打开默认对话框
-const showDefaultDialog = () => {
-  defaultDialogOpen.value = true
-}
+const showInfo = () => { infoOpen.value = true }
+const showSuccess = () => { successOpen.value = true }
+const showWarning = () => { warningOpen.value = true }
+const showError = () => { errorOpen.value = true }
+const showSmall = () => { smallOpen.value = true }
+const showMedium = () => { mediumOpen.value = true }
+const showLarge = () => { largeOpen.value = true }
 
-// 打开信息对话框
-const showInfoDialog = () => {
-  infoDialogOpen.value = true
-}
+const basicCode = `<ZDialog v-model="open" title="提示" type="info" size="small">
+  <p>提示内容</p>
+</ZDialog>`
 
-// 打开错误对话框
-const showErrorDialog = () => {
-  errorDialogOpen.value = true
-}
+const sizeCode = `<ZDialog v-model="open" title="小对话框" size="small">...</ZDialog>
+<ZDialog v-model="open" title="中对话框" size="medium">...</ZDialog>
+<ZDialog v-model="open" title="大对话框" size="large">...</ZDialog>`
 
-// 打开确认对话框
-const showConfirmDialog = () => {
-  confirmDialogOpen.value = true
-}
+const dialogProps = [
+  { name: 'modelValue', type: 'boolean', default: 'false', description: '是否显示对话框（双向绑定）' },
+  { name: 'title', type: 'string', default: "'提示'", description: '对话框标题' },
+  { name: 'size', type: 'string', default: "'medium'", description: '对话框尺寸，可选 small / medium / large' },
+  { name: 'type', type: 'string', default: "'info'", description: '对话框类型，可选 info / success / warning / error' },
+  { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: '点击遮罩层是否关闭' }
+]
 
-// 处理确认操作
-const handleConfirm = () => {
-  alert('操作已确认！')
-  confirmDialogOpen.value = false
-}
+const dialogEvents = [
+  { name: 'update:modelValue', params: ['boolean'], description: '对话框显示状态变化时触发' },
+  { name: 'confirm', params: [], description: '点击确认按钮时触发' }
+]
+
+const dialogSlots = [
+  { name: 'default', description: '对话框内容区域' },
+  { name: 'footer', description: '对话框底部按钮区域' }
+]
 </script>
 
 <style scoped>
-.demo-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.demo-section {
-  background: var(--z-surface-raised);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  margin-bottom: 32px;
-}
-
-.demo-section h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--z-text);
-  margin: 0 0 16px 0;
-}
-
-.demo-section p {
-  color: var(--z-text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-.demo-controls {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.dialog-group {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.preview-box {
-  background: var(--z-surface);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  min-height: 300px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 </style>

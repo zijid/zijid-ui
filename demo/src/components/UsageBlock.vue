@@ -14,7 +14,7 @@
     </div>
     
     <div v-show="showCode" class="usage-code">
-      <CodeBlock :code="code" />
+      <ZCodeBlock :code="code" language="vue" />
     </div>
     
     <div v-if="description" class="usage-description">
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import CodeBlock from './CodeBlock.vue'
+import { ZCodeBlock } from 'zijid-ui'
 
 const props = defineProps<{
   title: string

@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import type { IconName } from '../components/icon/icons'
+import { globalWindowLayerManager, type WindowLayerEntry } from './useWindowLayers'
 
 export type ManagedWindow = {
   id: string
@@ -14,21 +15,37 @@ export type ManagedWindow = {
   y: number
 }
 
-let seed = 2000
-
 export function useWindowManager(initialWindows: Array<Partial<ManagedWindow> & { id: string; title: string }> = []) {
+  const layerEntries = new Map<string, WindowLayerEntry>()
+
+  function createLayerEntry(win: ManagedWindow): WindowLayerEntry {
+    return {
+      id: win.id,
+      setLayer(zIndex: number) {
+        win.zIndex = zIndex
+      },
+      setActive(active: boolean) {
+        win.active = active
+      }
+    }
+  }
+
   const windows = ref<ManagedWindow[]>(
-    initialWindows.map((item, index) => ({
-      icon: 'window',
-      visible: false,
-      minimized: false,
-      maximized: false,
-      active: false,
-      zIndex: ++seed,
-      x: index * 28,
-      y: index * 28,
-      ...item
-    }))
+    initialWindows.map((item, index) => {
+      const win = {
+        icon: 'window' as const,
+        visible: false,
+        minimized: false,
+        maximized: false,
+        active: false,
+        zIndex: 0,
+        x: index * 28,
+        y: index * 28,
+        ...item
+      }
+      layerEntries.set(win.id, createLayerEntry(win))
+      return win
+    })
   )
 
   const taskbarWindows = computed(() => windows.value.filter((item) => item.visible))
@@ -40,21 +57,25 @@ export function useWindowManager(initialWindows: Array<Partial<ManagedWindow> & 
   function activate(id: string) {
     const target = getWindow(id)
     if (!target) return
-    windows.value.forEach((item) => {
-      item.active = item.id === id
-    })
     target.visible = true
     target.minimized = false
-    target.zIndex = ++seed
+    globalWindowLayerManager.activate(id)
   }
 
   function open(id: string) {
+    const target = getWindow(id)
+    if (!target) return
+    const entry = layerEntries.get(id)
+    if (entry) {
+      globalWindowLayerManager.register(entry)
+    }
     activate(id)
   }
 
   function close(id: string) {
     const target = getWindow(id)
     if (!target) return
+    globalWindowLayerManager.unregister(id)
     target.visible = false
     target.active = false
   }

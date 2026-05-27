@@ -30,7 +30,7 @@
           </div>
         </ZWindow>
       </div>
-      <CodeBlock :code="basicCode" />
+      <ZCodeBlock :code="basicCode" language="vue" />
     </div>
 
     <div class="demo-section">
@@ -52,7 +52,7 @@
           <ZButton v-if="!win2" @click="win2 = true">打开窗口 B</ZButton>
         </div>
       </div>
-      <CodeBlock :code="multiCode" />
+      <ZCodeBlock :code="multiCode" language="vue" />
     </div>
 
     <!-- API 文档部分 -->
@@ -139,8 +139,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ZWindow, ZButton } from 'zijid-ui'
-import CodeBlock from '../components/CodeBlock.vue'
+import { ZCodeBlock, ZWindow, ZButton } from 'zijid-ui'
 import ApiTable from '../components/ApiTable.vue'
 import UsageBlock from '../components/UsageBlock.vue'
 
@@ -262,61 +261,4 @@ const advancedUsageCode = `<template>
 <\/template>`
 </script>
 
-<style scoped>
-.demo-page { padding: 40px; max-width: 1000px; margin: 0 auto; }
-.desc { color: #666; margin-bottom: 30px; font-size: 15px; }
-.demo-section { margin-bottom: 50px; border-bottom: 1px solid #eee; padding-bottom: 30px; }
-.sub-desc { color: #888; font-size: 13px; margin-top: -10px; margin-bottom: 20px; }
 
-.controls { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-.status-text { font-size: 13px; color: #555; font-family: monospace; }
-
-.preview-box { 
-  background: #dcdcdc; 
-  padding: 0; 
-  border-radius: 4px; 
-  height: 500px; /* 增加高度 */
-  position: relative; /* 为了让 absolute 定位的窗口看起来更真实 */
-  overflow: hidden; 
-  border: 2px solid #999; /* 增加边框让边界更清晰 */
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-}
-
-.multi-window-demo { height: 350px; }
-
-.window-content { padding: 10px; line-height: 1.6; }
-.window-content ul { padding-left: 20px; margin: 10px 0; }
-.window-content li { margin-bottom: 6px; }
-
-.open-buttons {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  display: flex;
-  gap: 10px;
-}
-
-/* API 文档新增样式 */
-.demo-window-container {
-  background: #f8f9fa;
-  border: 1px dashed #dee2e6;
-  border-radius: 8px;
-  padding: 20px;
-  min-height: 300px;
-}
-
-.demo-window-content {
-  padding: 16px;
-  line-height: 1.6;
-}
-
-.demo-window-content p {
-  margin-bottom: 12px;
-}
-
-.demo-window-content h3 {
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 16px;
-}
-</style>

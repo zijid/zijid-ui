@@ -7,6 +7,7 @@
       'win10-window--maximized': isMaximized,
       'win10-window--minimized': isMinimized
     }"
+    ref="windowRef"
     :style="windowStyle"
     tabindex="0"
     @focusin="focusWindow"
@@ -16,7 +17,7 @@
       <div class="win10-window__title"><slot name="title">{{ title }}</slot></div>
       <div class="win10-window__actions" aria-label="窗口操作">
         <button class="win10-window__action win10-window__action--minimize" type="button" aria-label="最小化" @click="minimize">
-          <ZIcon name="window-minimize" :size="16" />
+          <ZIcon name="window-minimize" :size="18" />
         </button>
         <button
           class="win10-window__action win10-window__action--maximize"
@@ -24,27 +25,24 @@
           :aria-label="isMaximized ? '还原' : '最大化'"
           @click="toggleMaximize"
         >
-          <ZIcon :name="isMaximized ? 'window-restore' : 'window-maximize'" :size="16" />
+          <ZIcon :name="isMaximized ? 'window-restore' : 'window-maximize'" :size="18" />
         </button>
         <button class="win10-window__action win10-window__action--close" type="button" aria-label="关闭" @click="close">
-          <ZIcon name="window-close" :size="16" />
+          <ZIcon name="window-close" :size="18" />
         </button>
       </div>
     </header>
-    <div v-show="!isMinimized" class="win10-window__body">
+    <div class="win10-window__body">
       <slot />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-let windowIdCounter = 0
-</script>
-
-<script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from 'vue'
 import ZIcon from '../icon/ZIcon.vue'
 import { globalWindowLayerManager, type WindowLayerEntry } from '../../composables/useWindowLayers'
+import { generateWindowId } from '../../composables/useWindowId'
 
 defineOptions({ name: 'ZWindow' })
 
@@ -74,7 +72,7 @@ const props = withDefaults(
   }
 )
 
-const instanceId = `z-window-${++windowIdCounter}`
+const instanceId = generateWindowId()
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -99,11 +97,12 @@ const internalVisible = ref(true)
 const internalMinimized = ref(false)
 const internalMaximized = ref(false)
 const internalFocused = ref(false)
-const internalX = ref(0)
-const internalY = ref(0)
-const internalZIndex = ref(0)
+const internalX = ref<number | null>(null)
+const internalY = ref<number | null>(null)
+const internalZIndex = ref(props.zIndex ?? 0)
 const isDragging = ref(false)
 const dragStart = ref({ pointerX: 0, pointerY: 0, x: 0, y: 0 })
+const windowRef = ref<HTMLElement | null>(null)
 const preMaximizeState = ref<{ x: number; y: number } | null>(null)
 let isRegisteredLayer = false
 
@@ -151,6 +150,9 @@ watch(
     if (value) {
       registerLayer()
       globalWindowLayerManager.activate(instanceId)
+      if (internalMinimized.value) {
+        setMinimized(false)
+      }
     } else {
       unregisterLayer()
     }
@@ -160,10 +162,10 @@ watch(
 
 const currentZIndex = computed(() => internalZIndex.value)
 const currentX = computed(() => {
-  return internalX.value !== 0 ? internalX.value : (props.x ?? 0)
+  return internalX.value !== null ? internalX.value : (props.x ?? 0)
 })
 const currentY = computed(() => {
-  return internalY.value !== 0 ? internalY.value : (props.y ?? 0)
+  return internalY.value !== null ? internalY.value : (props.y ?? 0)
 })
 
 const windowStyle = computed(() => {
@@ -188,7 +190,7 @@ const windowStyle = computed(() => {
     baseStyle.top = `${currentY.value}px`
     baseStyle.right = 'auto'
     baseStyle.bottom = 'auto'
-    baseStyle.left = `${currentX.value}px'
+    baseStyle.left = `${currentX.value}px`
   }
 
   return baseStyle
@@ -228,12 +230,17 @@ function startDrag(event: PointerEvent) {
     return
   }
 
+  if (isMinimized.value) {
+    setMinimized(false)
+    emit('restore')
+  }
+
   focusWindow()
 
   if (isMaximized.value) {
     preMaximizeState.value = { x: currentX.value, y: currentY.value }
     setMaximized(false)
-    
+
     setTimeout(() => {
       isDragging.value = true
       dragStart.value = {
@@ -269,8 +276,18 @@ function drag(event: PointerEvent) {
     return
   }
 
-  const nextX = dragStart.value.x + event.clientX - dragStart.value.pointerX
-  const nextY = dragStart.value.y + event.clientY - dragStart.value.pointerY
+  let nextX = dragStart.value.x + event.clientX - dragStart.value.pointerX
+  let nextY = dragStart.value.y + event.clientY - dragStart.value.pointerY
+
+  const el = windowRef.value
+  if (el && el.offsetParent) {
+    const parent = el.offsetParent as HTMLElement
+    const maxX = parent.clientWidth - el.offsetWidth
+    const maxY = parent.clientHeight - el.offsetHeight
+    nextX = Math.max(0, Math.min(nextX, maxX))
+    nextY = Math.max(0, Math.min(nextY, maxY))
+  }
+
   setPosition(nextX, nextY)
 }
 
@@ -293,13 +310,17 @@ function close() {
 }
 
 function minimize() {
-  focusWindow()
   setMinimized(true)
+  emit('update:modelValue', false)
   emit('minimize')
 }
 
 function toggleMaximize() {
   focusWindow()
+
+  if (isMinimized.value) {
+    setMinimized(false)
+  }
 
   if (isMaximized.value) {
     setMaximized(false)
@@ -334,27 +355,37 @@ onUnmounted(() => {
   min-height: 100px;
   outline: none;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.win10-window--focused {
+  border-color: #b0b0b0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10), 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.win10-window--focused .win10-window__titlebar {
+  background: linear-gradient(to bottom, #fafafa, #f0f0f0);
+  border-bottom-color: #d0d0d0;
 }
 
 .win10-window--maximized {
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  transform: none !important;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
   border: none;
   border-radius: 0;
   box-shadow: none;
 }
 
-.win10-window--minimized .win10-window__body {
+.win10-window--minimized {
   display: none;
 }
 
 .win10-window__titlebar {
+  position: relative;
   height: 32px;
   background: linear-gradient(to bottom, #f8f8f8, #f0f0f0);
   display: flex;
@@ -366,6 +397,7 @@ onUnmounted(() => {
   border-bottom: 1px solid #e0e0e0;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+  overflow: hidden;
 }
 
 .win10-window__title {

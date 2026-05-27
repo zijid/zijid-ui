@@ -1,60 +1,53 @@
-<template>
-  <div class="demo-container">
+﻿<template>
+  <div class="demo-page">
+    <h1>ZCheckbox 复选框</h1>
+    <p class="desc">用于多选操作，支持多种状态和双向绑定。</p>
+
     <div class="demo-section">
-      <h2>Checkbox 组件展示</h2>
-      <p>Windows 10 风格的复选框样式和交互</p>
-      
-      <div class="demo-controls">
-        <div class="checkbox-group">
-          <ZCheckbox>基本复选框</ZCheckbox>
-          <ZCheckbox variant="primary">主要复选框</ZCheckbox>
-          <ZCheckbox variant="danger">危险复选框</ZCheckbox>
-        </div>
-      </div>
-      
-      <div class="demo-controls">
-        <div class="checkbox-group">
-          <ZCheckbox disabled>禁用复选框</ZCheckbox>
-          <ZCheckbox variant="primary" disabled>禁用主要复选框</ZCheckbox>
-        </div>
-      </div>
-      
-      <div class="demo-controls">
-        <div class="checkbox-group">
-          <ZCheckbox v-model="checked1">选项 1</ZCheckbox>
-          <ZCheckbox v-model="checked2">选项 2</ZCheckbox>
-          <ZCheckbox v-model="checked3">选项 3</ZCheckbox>
-        </div>
-        <div class="checkbox-status">
-          <p>已选择: {{ [checked1, checked2, checked3].filter(Boolean).join(', ') || '无' }}</p>
-        </div>
-      </div>
-      
-      <div class="demo-controls">
-        <div class="checkbox-group">
-          <ZCheckbox v-model="allChecked" @change="toggleAll">全选</ZCheckbox>
-          <ZCheckbox v-for="item in items" :key="item.value" v-model="selectedItems" :value="item.value">
-            {{ item.label }}
-          </ZCheckbox>
-        </div>
-      </div>
-      
+      <h2>基本用法</h2>
       <div class="preview-box">
-        <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-          <p>演示区域 - 复选框组件</p>
-          <div style="display: flex; flex-direction: column; gap: 12px; width: 300px;">
-            <ZCheckbox v-model="demoChecked1">单个复选框</ZCheckbox>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <ZCheckbox v-model="demoChecked2">选项 A</ZCheckbox>
-              <ZCheckbox v-model="demoChecked3">选项 B</ZCheckbox>
-              <ZCheckbox v-model="demoChecked4">选项 C</ZCheckbox>
-            </div>
-            <div style="border-top: 1px solid var(--z-border); padding-top: 12px;">
-              <p style="font-size: 14px; color: var(--z-text-muted);">已选择: {{ [demoChecked2, demoChecked3, demoChecked4].filter(Boolean).map((v, i) => ['A', 'B', 'C'][i]).join(', ') || '无' }}</p>
-            </div>
-          </div>
-        </div>
+        <ZCheckbox v-model="checked1">选项 A</ZCheckbox>
+        <ZCheckbox v-model="checked2">选项 B</ZCheckbox>
+        <ZCheckbox v-model="checked3">选项 C</ZCheckbox>
       </div>
+      <ZCodeBlock :code="basicCode" language="vue" />
+    </div>
+
+    <div class="demo-section">
+      <h2>禁用状态</h2>
+      <div class="preview-box">
+        <ZCheckbox v-model="checked4" disabled>禁用未选</ZCheckbox>
+        <ZCheckbox v-model="checked5" disabled>禁用已选</ZCheckbox>
+      </div>
+      <ZCodeBlock :code="disabledCode" language="vue" />
+    </div>
+
+    <div class="demo-section">
+      <h2>不同变体</h2>
+      <div class="preview-box">
+        <ZCheckbox v-model="checked6" variant="default">默认</ZCheckbox>
+        <ZCheckbox v-model="checked7" variant="primary">主要</ZCheckbox>
+        <ZCheckbox v-model="checked8" variant="danger">危险</ZCheckbox>
+      </div>
+      <ZCodeBlock :code="variantCode" language="vue" />
+    </div>
+
+    <div class="demo-section">
+      <h2>分组选择</h2>
+      <div class="preview-box" style="flex-direction: column; align-items: flex-start;">
+        <ZCheckbox v-model="allChecked" @change="toggleAll">全选</ZCheckbox>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; padding-left: 24px;">
+          <ZCheckbox v-for="item in items" :key="item.value" v-model="selectedItems" :value="item.value">{{ item.label }}</ZCheckbox>
+        </div>
+        <p style="font-size: 13px; color: #666; margin: 8px 0 0 0;">已选择: {{ selectedItems.join(', ') || '无' }}</p>
+      </div>
+      <ZCodeBlock :code="groupCode" language="vue" />
+    </div>
+
+    <!-- API 参考 -->
+    <div class="demo-section">
+      <h2>API 参考</h2>
+      <ApiTable :props="checkboxProps" :events="checkboxEvents" />
     </div>
   </div>
 </template>
@@ -62,19 +55,18 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { ZCheckbox } from 'zijid-ui'
+import { ZCodeBlock } from 'zijid-ui'
+import ApiTable from '../components/ApiTable.vue'
 
-// 基本复选框状态
-const checked1 = ref(false)
+const checked1 = ref(true)
 const checked2 = ref(false)
 const checked3 = ref(false)
+const checked4 = ref(false)
+const checked5 = ref(true)
+const checked6 = ref(true)
+const checked7 = ref(false)
+const checked8 = ref(false)
 
-// 演示复选框状态
-const demoChecked1 = ref(false)
-const demoChecked2 = ref(false)
-const demoChecked3 = ref(false)
-const demoChecked4 = ref(false)
-
-// 多选复选框
 const items = [
   { value: 'item1', label: '项目 1' },
   { value: 'item2', label: '项目 2' },
@@ -83,14 +75,11 @@ const items = [
 ]
 
 const selectedItems = ref<string[]>([])
+
 const allChecked = computed({
   get: () => selectedItems.value.length === items.length,
-  set: (value) => {
-    if (value) {
-      selectedItems.value = items.map(item => item.value)
-    } else {
-      selectedItems.value = []
-    }
+  set: (val: boolean) => {
+    selectedItems.value = val ? items.map(item => item.value) : []
   }
 })
 
@@ -101,71 +90,32 @@ const toggleAll = () => {
     selectedItems.value = items.map(item => item.value)
   }
 }
+
+const basicCode = `<ZCheckbox v-model="checked">选项</ZCheckbox>`
+
+const disabledCode = `<ZCheckbox disabled>禁用未选</ZCheckbox>
+<ZCheckbox disabled checked>禁用已选</ZCheckbox>`
+
+const variantCode = `<ZCheckbox v-model="val" variant="default">默认</ZCheckbox>
+<ZCheckbox v-model="val" variant="primary">主要</ZCheckbox>
+<ZCheckbox v-model="val" variant="danger">危险</ZCheckbox>`
+
+const groupCode = `<ZCheckbox v-model="allChecked" @change="toggleAll">全选</ZCheckbox>
+<ZCheckbox v-for="item in items" :key="item.value"
+  v-model="selectedItems" :value="item.value">
+  {{ item.label }}
+</ZCheckbox>`
+
+const checkboxProps = [
+  { name: 'modelValue', type: 'boolean / string[]', default: 'false', description: '复选框的值（双向绑定）；单个使用时为 boolean，分组时传数组' },
+  { name: 'value', type: 'string', default: '-', description: '复选框对应的值（分组选择时使用）' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: '是否禁用' },
+  { name: 'variant', type: 'string', default: "'default'", description: '复选框变体，可选 default / primary / danger' }
+]
+
+const checkboxEvents = [
+  { name: 'update:modelValue', params: ['boolean | string[]'], description: '选中状态变化时触发' },
+  { name: 'change', params: ['Event'], description: '值改变时触发' }
+]
 </script>
 
-<style scoped>
-.demo-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.demo-section {
-  background: var(--z-surface-raised);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  margin-bottom: 32px;
-}
-
-.demo-section h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--z-text);
-  margin: 0 0 16px 0;
-}
-
-.demo-section p {
-  color: var(--z-text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-.demo-controls {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 200px;
-}
-
-.checkbox-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--z-surface);
-  border: 1px solid var(--z-border);
-  border-radius: 4px;
-  font-size: 14px;
-  color: var(--z-text);
-}
-
-.preview-box {
-  background: var(--z-surface);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  min-height: 300px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>

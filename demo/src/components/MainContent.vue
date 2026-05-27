@@ -11,9 +11,8 @@
 <style scoped>
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 240px;
   background: #f8fafc;
   min-height: 100vh;
-  padding: 40px;
 }
 </style>

@@ -1,140 +1,91 @@
 <template>
-  <div class="demo-container">
+  <div class="demo-page">
+    <h1>ZRadio 单选框</h1>
+    <p class="desc">Windows 10 风格的单选框，用于在多个选项中选择一个。</p>
+
     <div class="demo-section">
-      <h2>Radio 组件展示</h2>
-      <p>Windows 10 风格的单选框样式和交互</p>
-      
-      <div class="demo-controls">
+      <h2>基本用法</h2>
+      <div class="preview-box" style="flex-direction: column; align-items: flex-start;">
         <div class="radio-group">
           <ZRadio v-model="selectedOption1" value="option1">选项 1</ZRadio>
           <ZRadio v-model="selectedOption1" value="option2">选项 2</ZRadio>
           <ZRadio v-model="selectedOption1" value="option3">选项 3</ZRadio>
         </div>
-      </div>
-      
-      <div class="demo-controls">
-        <div class="radio-group">
-          <ZRadio v-model="selectedOption2" value="male" disabled>男性</ZRadio>
-          <ZRadio v-model="selectedOption2" value="female">女性</ZRadio>
-        </div>
         <div class="radio-status">
           <p>当前选择: {{ selectedOption1 || '无' }}</p>
         </div>
       </div>
-      
-      <div class="demo-controls">
+      <ZCodeBlock :code="basicCode" language="vue" />
+    </div>
+
+    <div class="demo-section">
+      <h2>禁用状态</h2>
+      <div class="preview-box" style="flex-direction: column; align-items: flex-start;">
         <div class="radio-group">
-          <h4>选择城市：</h4>
+          <ZRadio v-model="selectedOption2" value="male" disabled>男性</ZRadio>
+          <ZRadio v-model="selectedOption2" value="female">女性</ZRadio>
+        </div>
+      </div>
+      <ZCodeBlock :code="disabledCode" language="vue" />
+    </div>
+
+    <div class="demo-section">
+      <h2>更多选项</h2>
+      <div class="preview-box" style="flex-direction: column; align-items: flex-start;">
+        <div class="radio-group">
           <ZRadio v-model="selectedCity" value="beijing">北京</ZRadio>
           <ZRadio v-model="selectedCity" value="shanghai">上海</ZRadio>
           <ZRadio v-model="selectedCity" value="guangzhou">广州</ZRadio>
           <ZRadio v-model="selectedCity" value="shenzhen">深圳</ZRadio>
         </div>
       </div>
-      
-      <div class="preview-box">
-        <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
-          <p>演示区域 - 单选框组件</p>
-          <div style="display: flex; flex-direction: column; gap: 12px; width: 300px;">
-            <div class="radio-group">
-              <h4 style="margin: 0 0 8px 0; font-size: 14px; color: var(--z-text);">选择套餐：</h4>
-              <ZRadio v-model="selectedPlan" value="basic">基础版</ZRadio>
-              <ZRadio v-model="selectedPlan" value="pro">专业版</ZRadio>
-              <ZRadio v-model="selectedPlan" value="enterprise">企业版</ZRadio>
-            </div>
-            <div style="border-top: 1px solid var(--z-border); padding-top: 12px;">
-              <p style="font-size: 14px; color: var(--z-text-muted);">当前选择: {{ selectedPlan || '无' }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ZCodeBlock :code="cityCode" language="vue" />
+    </div>
+
+    <!-- API 参考 -->
+    <div class="demo-section">
+      <h2>API 参考</h2>
+      <ApiTable :props="radioProps" :events="radioEvents" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { ZRadio } from 'zijid-ui'
+import { ZCodeBlock } from 'zijid-ui'
+import ApiTable from '../components/ApiTable.vue'
 
-// 单选框状态
-const selectedOption1 = ref<string>('')
-const selectedOption2 = ref<string>('')
-const selectedCity = ref<string>('')
-const selectedPlan = ref<string>('')
+const selectedOption1 = ref('')
+const selectedOption2 = ref('')
+const selectedCity = ref('')
 
-// 监听选择变化
-watch(selectedOption1, (newValue) => {
-  console.log('选项1选择:', newValue)
-})
+const basicCode = `<ZRadio v-model="selected" value="option1">选项 1</ZRadio>
+<ZRadio v-model="selected" value="option2">选项 2</ZRadio>
+<ZRadio v-model="selected" value="option3">选项 3</ZRadio>`
 
-watch(selectedCity, (newValue) => {
-  console.log('城市选择:', newValue)
-})
+const disabledCode = `<ZRadio v-model="selected" value="male" disabled>男性</ZRadio>
+<ZRadio v-model="selected" value="female">女性</ZRadio>`
+
+const cityCode = `<ZRadio v-model="selected" value="beijing">北京</ZRadio>
+<ZRadio v-model="selected" value="shanghai">上海</ZRadio>
+<ZRadio v-model="selected" value="guangzhou">广州</ZRadio>
+<ZRadio v-model="selected" value="shenzhen">深圳</ZRadio>`
+
+const radioProps = [
+  { name: 'modelValue', type: 'string', default: '-', description: '当前选中的值（双向绑定）' },
+  { name: 'value', type: 'string', default: '-', description: '单选框对应的值（必填）' },
+  { name: 'label', type: 'string', default: '-', description: '显示的标签文本' },
+  { name: 'disabled', type: 'boolean', default: 'false', description: '是否禁用' }
+]
+
+const radioEvents = [
+  { name: 'update:modelValue', params: ['string'], description: '选中值变化时触发' }
+]
 </script>
 
 <style scoped>
-.demo-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.demo-section {
-  background: var(--z-surface-raised);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  margin-bottom: 32px;
-}
-
-.demo-section h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--z-text);
-  margin: 0 0 16px 0;
-}
-
-.demo-section p {
-  color: var(--z-text-muted);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-.demo-controls {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 200px;
-}
-
-.radio-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--z-surface);
-  border: 1px solid var(--z-border);
-  border-radius: 4px;
-  font-size: 14px;
-  color: var(--z-text);
-}
-
-.preview-box {
-  background: var(--z-surface);
-  border: 1px solid var(--z-border);
-  border-radius: 8px;
-  padding: 32px;
-  min-height: 300px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.radio-group { display: flex; flex-direction: column; gap: 12px; min-width: 200px; }
+.radio-status { padding: 8px 16px; background: #eee; border-radius: 4px; font-size: 14px; }
+.radio-status p { margin: 0; }
 </style>

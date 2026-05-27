@@ -1,949 +1,141 @@
+/* ========================================
+   Zijid UI - Win10 Fluent Design Styles
+   ======================================== */
+
+/* Base reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
-  --z-accent: #0078d4;
-  --z-accent-hover: #106ebe;
-  --z-danger: #c42b1c;
-  --z-border: #8a8886;
-  --z-surface: #f3f2f1;
-  --z-surface-raised: #ffffff;
   --z-text: #1b1a19;
   --z-text-muted: #605e5c;
-  --z-shadow: 0 8px 28px rgba(0, 0, 0, 0.24);
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --z-border: #8a8886;
+  --z-accent: #0078d4;
+  --z-danger: #c42b1c;
+  --z-input-bg: #ffffff;
+  --z-surface: #f3f2f1;
+  --z-input-border-hover: #323130;
 }
 
-.z-button {
-  min-width: 88px;
-  height: 32px;
+/* ========================================
+   ZList - 列表组件
+   ======================================== */
+.z-list {
+  list-style: none;
+  padding: 4px 0;
+  margin: 0;
+  min-width: 160px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--z-text);
+  background: #ffffff;
   border: 1px solid var(--z-border);
   border-radius: 2px;
-  background: var(--z-surface-raised);
-  color: var(--z-text);
-  cursor: default;
-  font: inherit;
-  padding: 0 16px;
-  transition: background-color 120ms ease, border-color 120ms ease;
-}
-
-.z-button:hover:not(:disabled) {
-  background: #f8f8f8;
-  border-color: #323130;
-}
-
-.z-button:active:not(:disabled) {
-  background: #edebe9;
-}
-
-.z-button:disabled {
-  color: #a19f9d;
-  background: #f3f2f1;
-  border-color: #c8c6c4;
-}
-
-.z-button--primary {
-  border-color: var(--z-accent);
-  background: var(--z-accent);
-  color: #fff;
-}
-
-.z-button--primary:hover:not(:disabled) {
-  border-color: var(--z-accent-hover);
-  background: var(--z-accent-hover);
-}
-
-.z-button--danger {
-  border-color: var(--z-danger);
-  background: var(--z-danger);
-  color: #fff;
-}
-
-.z-button__content {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.z-icon {
-  display: inline-block;
-  flex: 0 0 auto;
-  vertical-align: -0.125em;
-}
-
-.z-window {
-  border: 1px solid #c0c0c0;
-  background: #ffffff;
-  color: #000000;
   outline: none;
-  position: relative;
 }
 
-.z-window--focused {
-  border-color: #0078d4;
-}
-
-.z-window--maximized {
-  width: 100%;
-}
-
-.z-window--minimized {
-  border-color: #c0c0c0;
-}
-
-.z-window__titlebar {
+.z-list__item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 32px;
-  background: #e6e6e6;
-  cursor: move;
-  user-select: none;
-  border-bottom: 1px solid #c0c0c0;
-}
-
-.z-window__title {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  padding: 0 12px;
-  color: #000000;
-  font-size: 13px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.z-window__actions {
-  display: grid;
-  grid-template-columns: repeat(3, 46px);
-  height: 100%;
-}
-
-.z-window__action {
-  position: relative;
-  display: block;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  font: inherit;
-  padding: 0;
-}
-
-.z-window__action span::before,
-.z-window__action span::after {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  content: '';
-}
-
-.z-window__action--minimize span::before {
-  width: 10px;
-  height: 1px;
-  background: #000000;
-}
-
-.z-window__action--maximize span::before {
-  width: 10px;
-  height: 10px;
-  border: 1px solid #000000;
-}
-
-.z-window__action--close span::before,
-.z-window__action span::after {
-  width: 12px;
-  height: 1px;
-  background: #000000;
-}
-
-.z-window__action--close span::before {
-  transform: rotate(45deg);
-}
-
-.z-window__action--close span::after {
-  transform: rotate(-45deg);
-}
-
-.z-window__action:hover {
-  background: #d9d9d9;
-}
-
-.z-window__action--close:hover {
-  background: #c0392b;
-}
-
-.z-window__action--close:hover span::before,
-.z-window__action--close:hover span::after {
-  background: #ffffff;
-}
-
-.z-window__action :deep(.z-icon) {
-  display: block;
-  stroke-width: 1.8;
-}
-
-.z-window__body {
-  padding: 12px;
-  background: #ffffff;
-}
-
-.z-desktop {
-  position: relative;
-  overflow: hidden;
-  min-height: 480px;
-  background:
-    linear-gradient(135deg, rgba(0, 120, 212, 0.38), transparent 44%),
-    linear-gradient(315deg, rgba(16, 124, 16, 0.28), transparent 34%),
-    #0f2b46;
-  color: #fff;
-}
-
-.z-desktop__icons {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 86px);
-  grid-auto-rows: 92px;
   gap: 8px;
-  align-content: start;
-  padding: 18px;
-}
-
-.z-desktop__windows {
-  position: absolute;
-  inset: 0 0 40px;
-  pointer-events: none;
-}
-
-.z-desktop__windows > * {
-  pointer-events: auto;
-}
-
-.z-desktop-icon {
-  display: grid;
-  place-items: center;
-  gap: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: #fff;
+  padding: 6px 12px;
   cursor: default;
-  font: inherit;
-  padding: 8px 6px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: background-color 90ms ease-out;
+  border-radius: 2px;
+  margin: 2px 4px;
 }
 
-.z-desktop-icon:hover,
-.z-desktop-icon--selected {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.16);
+.z-list__item:hover {
+  background: #e5f1fb;
 }
 
-.z-desktop-icon span {
-  max-width: 100%;
-  overflow: hidden;
-  font-size: 12px;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.z-list__item--active {
+  background: #cce4f7;
 }
 
-.z-taskbar {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 5000;
-  display: flex;
-  height: 40px;
-  background: rgba(32, 31, 30, 0.88);
-  color: #fff;
+.z-list__item--active:hover {
+  background: #cce4f7;
 }
 
-.z-taskbar button {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  font: inherit;
-}
-
-.z-taskbar__start {
-  width: 48px;
-}
-
-.z-taskbar__start:hover,
-.z-taskbar__app:hover,
-.z-taskbar__app--active {
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.z-taskbar__apps {
-  display: flex;
-  min-width: 0;
+.z-list__item span {
   flex: 1;
-}
-
-.z-taskbar__app {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 120px;
-  max-width: 180px;
-  border-bottom: 2px solid transparent;
-  padding: 0 12px;
-}
-
-.z-taskbar__app--active {
-  border-bottom-color: #76b9ed;
-}
-
-.z-taskbar__app span {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.z-taskbar__tray {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 14px;
-  font-size: 12px;
-}
-
-.z-start-menu {
-  position: absolute;
-  bottom: 40px;
-  left: 0;
-  z-index: 6000;
-  width: 360px;
-  min-height: 420px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(36, 36, 36, 0.96);
-  color: #fff;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
-}
-
-.z-start-menu__search {
-  padding: 14px;
-}
-
-.z-start-menu__search input {
-  width: 100%;
-  height: 32px;
-  border: 1px solid #8a8886;
-  background: #fff;
-  color: #1b1a19;
-  padding: 0 10px;
-}
-
-.z-start-menu__apps {
-  display: grid;
-  gap: 2px;
-  padding: 0 8px;
-}
-
-.z-start-menu__apps button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 40px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  font: inherit;
-  padding: 0 10px;
-}
-
-.z-start-menu__apps button:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.z-start-menu__footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 12px 16px;
-  color: #d2d0ce;
-  font-size: 12px;
-}
-
-.z-context-menu {
-  position: fixed;
-  z-index: 7000;
-  min-width: 184px;
-  margin: 0;
-  border: 1px solid #c8c6c4;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
-  color: #1b1a19;
-  list-style: none;
-  padding: 4px 0;
-}
-
-.z-context-menu li {
-  margin: 0;
-}
-
-.z-context-menu hr {
-  border: 0;
-  border-top: 1px solid #edebe9;
-  margin: 4px 0;
-}
-
-.z-context-menu button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  height: 32px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  font: inherit;
-  padding: 0 12px;
-  text-align: left;
-}
-
-.z-context-menu button:hover:not(:disabled) {
-  background: #f3f2f1;
-}
-
-.z-context-menu button:disabled {
-  color: #a19f9d;
-}
-
-.z-dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 8000;
-  display: grid;
-  place-items: center;
-}
-
-.z-dialog__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.32);
-}
-
-.z-dialog__window {
-  width: min(420px, calc(100vw - 32px));
-}
-
-.z-dialog__body {
-  min-height: 72px;
-}
-
-.z-dialog__footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.z-input,
-.z-select {
-  display: grid;
-  gap: 6px;
-  color: var(--z-text);
-}
-
-.z-input__label,
-.z-select__label {
-  color: var(--z-text-muted);
-  font-size: 13px;
-}
-
-.z-input__control,
-.z-select__control {
-  width: 100%;
-  height: 32px;
-  border: 1px solid #8a8886;
-  border-radius: 0;
-  background: #ffffff;
-  color: var(--z-text);
-  font: inherit;
-  padding: 0 10px;
-}
-
-.z-input__control:focus,
-.z-select__control:focus {
-  border-color: var(--z-accent);
-  outline: 1px solid var(--z-accent);
-}
-
-.z-input__control:disabled,
-.z-select__control:disabled {
-  border-color: #c8c6c4;
-  background: #f3f2f1;
-  color: #a19f9d;
-}
-
-.z-checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--z-text);
-  cursor: default;
-}
-
-.z-checkbox__input {
-  position: absolute;
-  opacity: 0;
-}
-
-.z-checkbox__box {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #605e5c;
-  background: #ffffff;
-}
-
-.z-checkbox__input:checked + .z-checkbox__box {
-  border-color: var(--z-accent);
-  background: var(--z-accent);
-}
-
-.z-checkbox__input:checked + .z-checkbox__box::after {
-  position: absolute;
-  left: 5px;
-  top: 1px;
-  width: 5px;
-  height: 10px;
-  border: solid #ffffff;
-  border-width: 0 2px 2px 0;
-  content: '';
-  transform: rotate(45deg);
-}
-
-.z-checkbox--disabled {
-  color: #a19f9d;
-}
-
-.z-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 0;
-  background: transparent;
-  color: var(--z-text);
-  cursor: default;
-  font: inherit;
-  padding: 0;
-}
-
-.z-switch__track {
-  position: relative;
-  width: 44px;
-  height: 20px;
-  border: 1px solid #605e5c;
-  border-radius: 10px;
-  background: #ffffff;
-}
-
-.z-switch__thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #605e5c;
-  transition: transform 120ms ease;
-}
-
-.z-switch--checked .z-switch__track {
-  border-color: var(--z-accent);
-  background: var(--z-accent);
-}
-
-.z-switch--checked .z-switch__thumb {
-  background: #ffffff;
-  transform: translateX(24px);
-}
-
-.z-switch:disabled {
-  color: #a19f9d;
-}
-
-.z-tabs {
-  border: 1px solid #e1dfdd;
-  background: #ffffff;
-}
-
-.z-tabs__nav {
-  display: flex;
-  border-bottom: 1px solid #e1dfdd;
-  background: #faf9f8;
-}
-
-.z-tabs__tab {
-  height: 36px;
-  border: 0;
-  border-right: 1px solid #e1dfdd;
-  border-bottom: 2px solid transparent;
-  background: transparent;
-  color: var(--z-text);
-  cursor: default;
-  font: inherit;
-  padding: 0 16px;
-}
-
-.z-tabs__tab--active {
-  border-bottom-color: var(--z-accent);
-  background: #ffffff;
-}
-
-.z-tabs__body {
-  padding: 16px;
-}
-
-.z-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  border: 1px solid #e1dfdd;
-  background: #faf9f8;
-  padding: 8px;
-}
-
-.z-panel {
-  border: 1px solid #e1dfdd;
-  background: #ffffff;
-  color: var(--z-text);
-}
-
-.z-panel__header,
-.z-panel__footer {
-  padding: 12px 16px;
-}
-
-.z-panel__header {
-  border-bottom: 1px solid #edebe9;
-  font-weight: 600;
-}
-
-.z-panel__body {
-  padding: 16px;
-}
-
-.z-panel__footer {
-  border-top: 1px solid #edebe9;
-  background: #faf9f8;
-}
-
-.z-menu {
-  min-width: 180px;
-  margin: 0;
-  border: 1px solid #c8c6c4;
-  background: #fff;
-  color: var(--z-text);
-  list-style: none;
-  padding: 4px 0;
-}
-
-.z-menu__separator {
-  border: 0;
-  border-top: 1px solid #edebe9;
-  margin: 4px 0;
-}
-
-.z-menu__item {
-  display: grid;
-  grid-template-columns: 18px 1fr auto;
-  gap: 8px;
-  align-items: center;
-  width: 100%;
-  height: 32px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  font: inherit;
-  padding: 0 12px;
-  text-align: left;
-}
-
-.z-menu__item:hover:not(:disabled) {
-  background: #f3f2f1;
-}
-
-.z-menu__item:disabled,
-.z-menu__shortcut {
-  color: #a19f9d;
-}
-
-.z-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.z-dropdown__trigger {
-  display: inline-block;
-}
-
-.z-dropdown__content {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  z-index: 6500;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-}
-
-.z-tooltip {
-  position: relative;
-  display: inline-flex;
-}
-
-.z-tooltip__content {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  z-index: 6600;
-  width: max-content;
-  max-width: 240px;
-  border: 1px solid #767676;
-  background: #ffffe1;
-  color: #1b1a19;
-  font-size: 12px;
-  opacity: 0;
-  padding: 5px 8px;
-  pointer-events: none;
-  transform: translateX(-50%);
-}
-
-.z-tooltip:hover .z-tooltip__content {
-  opacity: 1;
-}
-
-.z-toast {
-  display: inline-grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
-  align-items: start;
-  min-width: 280px;
-  border: 1px solid #c8c6c4;
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-  color: var(--z-text);
-  padding: 12px;
-}
-
-.z-toast--success {
-  border-left: 4px solid #107c10;
-}
-
-.z-toast--warning {
-  border-left: 4px solid #f7630c;
-}
-
-.z-toast--error {
-  border-left: 4px solid #c42b1c;
-}
-
-.z-toast__content {
-  display: grid;
-  gap: 4px;
-}
-
-.z-toast button {
-  border: 0;
-  background: transparent;
-  cursor: default;
-}
-
-.z-list,
+/* ========================================
+   ZTree - 树形控件
+   ======================================== */
 .z-tree {
-  margin: 0;
-  background: #fff;
-  color: var(--z-text);
   list-style: none;
-  padding: 4px;
+  padding: 4px 0;
+  margin: 0;
+  min-width: 160px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--z-text);
+  background: #ffffff;
+  border: 1px solid var(--z-border);
+  border-radius: 2px;
+  outline: none;
 }
 
-.z-list__item,
+.z-tree__node {
+  list-style: none;
+}
+
 .z-tree__row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 30px;
-  border: 1px solid transparent;
-  cursor: default;
-  padding: 4px 8px;
-}
-
-.z-list__item:hover,
-.z-tree__row:hover {
-  background: #f3f2f1;
-}
-
-.z-list__item--active,
-.z-tree__row--active {
-  border-color: #99d1ff;
-  background: #cce8ff;
-}
-
-.z-tree__row {
+  gap: 6px;
   width: 100%;
+  padding: 4px 8px;
+  margin: 1px 4px;
+  border: none;
   background: transparent;
-  color: inherit;
-  font: inherit;
+  border-radius: 2px;
+  cursor: default;
   text-align: left;
+  transition: background-color 90ms ease-out;
+}
+
+.z-tree__row:hover {
+  background: #e5f1fb;
+}
+
+.z-tree__row--active {
+  background: #cce4f7;
+}
+
+.z-tree__row--active:hover {
+  background: #cce4f7;
 }
 
 .z-tree__twisty {
-  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--z-text-muted);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.z-tree__twisty:hover {
+  color: var(--z-text);
+  opacity: 1;
 }
 
 .z-tree__children {
-  margin: 0;
   list-style: none;
-  padding-left: 18px;
-}
-
-.z-splitter {
-  display: flex;
-  min-height: 180px;
-  border: 1px solid #e1dfdd;
-  background: #fff;
-}
-
-.z-splitter--vertical {
-  flex-direction: column;
-}
-
-.z-splitter__pane {
-  min-width: 0;
-  min-height: 0;
-  overflow: auto;
-  padding: 12px;
-}
-
-.z-splitter__handle {
-  flex: 0 0 5px;
-  background: #edebe9;
-  cursor: col-resize;
-}
-
-.z-splitter--vertical .z-splitter__handle {
-  cursor: row-resize;
-}
-
-.z-scroll-area {
-  overflow: auto;
-  scrollbar-color: #8a8886 #f3f2f1;
-  scrollbar-width: thin;
-}
-
-.z-progress {
-  overflow: hidden;
-  height: 6px;
-  background: #e1dfdd;
-}
-
-.z-progress__bar {
-  height: 100%;
-  background: var(--z-accent);
-  transition: width 120ms ease;
-}
-
-.z-radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: default;
-}
-
-.z-radio__input {
-  position: absolute;
-  opacity: 0;
-}
-
-.z-radio__dot {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #605e5c;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.z-radio__input:checked + .z-radio__dot::after {
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--z-accent);
-  content: '';
-}
-
-.z-slider,
-.z-textarea {
-  display: grid;
-  gap: 6px;
-  color: var(--z-text);
-}
-
-.z-slider input {
-  accent-color: var(--z-accent);
-}
-
-.z-textarea__label {
-  color: var(--z-text-muted);
-  font-size: 13px;
-}
-
-.z-textarea__control {
-  min-width: 220px;
-  border: 1px solid #8a8886;
-  background: #fff;
-  color: var(--z-text);
-  font: inherit;
-  padding: 8px 10px;
-  resize: vertical;
-}
-
-.z-search-box {
-  display: inline-grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  width: 260px;
-  height: 32px;
-  border: 1px solid #8a8886;
-  background: #fff;
-  color: var(--z-text-muted);
-  padding: 0 8px;
-}
-
-.z-search-box input {
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  font: inherit;
-  padding: 0 8px;
-}
-
-.z-search-box button {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: default;
-  padding: 0;
-}
-
-.z-status-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: 26px;
-  border-top: 1px solid #e1dfdd;
-  background: #faf9f8;
-  color: var(--z-text-muted);
-  font-size: 12px;
-  padding: 0 10px;
+  padding: 0 0 0 16px;
+  margin: 0;
 }

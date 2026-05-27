@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="api-table">
-    <div v-if="props.length > 0" class="api-section">
+    <div v-if="props.props && props.props.length > 0" class="api-section">
       <h3 class="api-section-title">Props</h3>
       <div class="api-table-wrapper">
         <table class="api-table">
@@ -13,7 +13,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="prop in props" :key="prop.name">
+            <tr v-for="prop in props.props" :key="prop.name">
               <td class="prop-name">
                 <code>{{ prop.name }}</code>
                 <span v-if="prop.required" class="required">*</span>
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div v-if="events.length > 0" class="api-section">
+    <div v-if="safeEvents.length > 0" class="api-section">
       <h3 class="api-section-title">Events</h3>
       <div class="api-table-wrapper">
         <table class="api-table">
@@ -45,24 +45,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="event in events" :key="event.name">
+            <tr v-for="evt in safeEvents" :key="evt.name">
               <td class="event-name">
-                <code>{{ event.name }}</code>
+                <code>{{ evt.name }}</code>
               </td>
               <td class="event-params">
-                <code v-if="event.params && event.params.length > 0">
-                  {{ event.params.map(p => typeof p === 'string' ? p : JSON.stringify(p)).join(', ') }}
+                <code v-if="evt.paramsDisplay && evt.paramsDisplay.length > 0">
+                  {{ evt.paramsDisplay }}
                 </code>
                 <span v-else>void</span>
               </td>
-              <td class="event-desc">{{ event.description }}</td>
+              <td class="event-desc">{{ evt.description }}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <div v-if="slots.length > 0" class="api-section">
+    <div v-if="props.slots && props.slots.length > 0" class="api-section">
       <h3 class="api-section-title">Slots</h3>
       <div class="api-table-wrapper">
         <table class="api-table">
@@ -73,7 +73,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="slot in slots" :key="slot.name">
+            <tr v-for="slot in props.slots" :key="slot.name">
               <td class="slot-name">
                 <code>{{ slot.name }}</code>
                 <span v-if="slot.default" class="default-slot">(default)</span>
@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <div v-if="exposes.length > 0" class="api-section">
+    <div v-if="props.exposes && props.exposes.length > 0" class="api-section">
       <h3 class="api-section-title">Exposes</h3>
       <div class="api-table-wrapper">
         <table class="api-table">
@@ -97,7 +97,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="expose in exposes" :key="expose.name">
+            <tr v-for="expose in props.exposes" :key="expose.name">
               <td class="expose-name">
                 <code>{{ expose.name }}</code>
               </td>
@@ -114,6 +114,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 interface ApiProp {
   name: string
   type: string
@@ -125,7 +127,7 @@ interface ApiProp {
 
 interface ApiEvent {
   name: string
-  params?: any[]
+  params?: any[] | string
   description: string
 }
 
@@ -141,28 +143,80 @@ interface ApiExpose {
   description: string
 }
 
-const props = defineProps<{
+interface SafeEvent {
+  name: string
+  paramsDisplay: string | null
+  description: string
+}
+
+const props = withDefaults(defineProps<{
   props?: ApiProp[]
   events?: ApiEvent[]
   slots?: ApiSlot[]
   exposes?: ApiExpose[]
-}>()
+}>(), {
+  props: () => [],
+  events: () => [],
+  slots: () => [],
+  exposes: () => []
+})
+
+const safeEvents = computed<SafeEvent[]>(() => {
+  try {
+    const raw = Array.isArray(props.events) ? props.events : []
+    return raw.map((evt: any) => {
+      let paramsDisplay: string | null = null
+      try {
+        const p = evt?.params
+        if (p !== undefined && p !== null) {
+          if (Array.isArray(p)) {
+            const strs = p
+              .filter((x: any) => x !== null && x !== undefined)
+              .map((x: any) => typeof x === 'string' ? x : String(x))
+            if (strs.length > 0) {
+              paramsDisplay = strs.join(', ')
+            }
+          } else if (typeof p === 'string') {
+            paramsDisplay = p
+          }
+        }
+      } catch {
+        // ignore per-event formatting errors
+      }
+      return {
+        name: typeof evt?.name === 'string' ? evt.name : 'unknown',
+        paramsDisplay,
+        description: typeof evt?.description === 'string' ? evt.description : ''
+      }
+    })
+  } catch {
+    return []
+  }
+})
 </script>
 
 <style scoped>
 .api-table {
   width: 100%;
-  border-collapse: collapse;
-  background: #fff;
+}
+
+.api-table-wrapper {
+  overflow-x: auto;
   border: 1px solid #e1e4e8;
-  border-radius: 6px;
-  overflow: hidden;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.api-table {
+  border-collapse: collapse;
+  width: 100%;
+  background: #fff;
 }
 
 .api-table th {
   background: #f6f8fa;
   border-bottom: 2px solid #e1e4e8;
-  padding: 12px 16px;
+  padding: 14px 24px;
   text-align: left;
   font-weight: 600;
   font-size: 14px;
@@ -170,7 +224,7 @@ const props = defineProps<{
 }
 
 .api-table td {
-  padding: 12px 16px;
+  padding: 14px 24px;
   border-bottom: 1px solid #e1e4e8;
   font-size: 14px;
   line-height: 1.5;
@@ -181,7 +235,7 @@ const props = defineProps<{
 }
 
 .api-section {
-  margin-bottom: 32px;
+  margin: 36px 0;
 }
 
 .api-section-title {
@@ -191,10 +245,6 @@ const props = defineProps<{
   color: #24292e;
   padding-bottom: 8px;
   border-bottom: 2px solid #e1e4e8;
-}
-
-.api-table-wrapper {
-  overflow-x: auto;
 }
 
 /* Prop styling */
@@ -296,15 +346,11 @@ code {
 }
 
 @media (max-width: 768px) {
-  .api-table {
-    font-size: 12px;
-  }
-  
   .api-table th,
   .api-table td {
     padding: 8px 12px;
   }
-  
+
   .api-section-title {
     font-size: 16px;
   }
