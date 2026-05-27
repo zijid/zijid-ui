@@ -21,12 +21,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install & build library
-        run: |
-          npm ci
-          npm run build
-          npm pack
-
       - name: Install & build demo
         run: |
           cd demo

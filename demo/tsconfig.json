@@ -16,7 +16,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@/*": ["./src/*"] // 相对于 tsconfig.json
+      "@/*": ["./src/*"],
+      "zijid-ui": ["../src"],
+      "zijid-ui/*": ["../src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
