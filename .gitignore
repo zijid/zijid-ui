@@ -7,3 +7,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+.ms-playwright/
+.tmp_extract/
+chrome-headless-shell-win64/
+chrome-win64/
+chromium-cache-tmp/
