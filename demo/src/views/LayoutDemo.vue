@@ -51,7 +51,7 @@
     <div class="demo-section">
       <h2>滚动区域模式 (ScrollArea)</h2>
       <div class="preview-box" style="flex-direction: column; align-items: stretch;">
-        <z-layout scroll :scroll="true" style="height: 160px; width: 320px;">
+        <z-layout :scroll="true" style="height: 160px; width: 320px;">
           <p v-for="i in 30" :key="i" style="padding: 4px 0;">滚动内容行 {{ i }}</p>
         </z-layout>
       </div>

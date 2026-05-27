@@ -9,3 +9,7 @@
   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.116.158:[1m5173[22m/[39m
   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.192.1:[1m5173[22m/[39m
 [2m14:05:11[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue, /@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue?vue&type=style&index=0&lang.css[22m
+[2m14:59:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/LayoutDemo.vue[22m
+[2m15:04:11[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue, /@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue?vue&type=style&index=0&lang.css, /@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue?vue&type=style&index=0&scoped=0bc867c7&lang.css[22m
+[2m15:13:10[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mscreenshots/select.html[22m
+[2m15:14:47[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue, /@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue?vue&type=style&index=0&lang.css, /@fs/F:/npm/zijid-ui/src/components/tooltip/ZTooltip.vue?vue&type=style&index=0&scoped=0bc867c7&lang.css[22m

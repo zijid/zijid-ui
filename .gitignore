@@ -8,6 +8,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+**/screenshots/
+tooltip-*.png
+
 .ms-playwright/
 .tmp_extract/
 chrome-headless-shell-win64/

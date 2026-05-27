@@ -1,180 +1,237 @@
 <template>
-  <div class="z-tooltip-wrapper" @mouseenter="showTooltip" @mouseleave="hideTooltip">
+  <div
+    class="z-tooltip-wrapper"
+    ref="wrapperRef"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
+    @click="onClick"
+  >
     <slot />
-    <Transition name="tooltip-fade">
+
+    <Teleport to="body">
       <div
         v-if="visible"
+        ref="tooltipRef"
         class="z-tooltip"
-        :class="[placementProps.positionClass]"
+        :class="[`z-tooltip--${currentPlacement}`, { 'z-tooltip--enter': animating }]"
+        :style="tooltipStyle"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
       >
-        <div class="z-tooltip-content" :style="contentStyle">
-          {{ content }}
-        </div>
-        <div class="z-tooltip-arrow" :class="placementProps.arrowClass" />
+        <div class="z-tooltip__arrow" :style="arrowStyle"></div>
+        <div class="z-tooltip__content">{{ content }}</div>
       </div>
-    </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, type CSSProperties } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 
-interface Props {
-  content: string
-  placement?: 'top' | 'bottom' | 'left' | 'right'
-  maxWidth?: string | number
-}
+defineOptions({ name: 'ZTooltip' })
 
-const props = withDefaults(defineProps<Props>(), {
-  placement: 'top',
-  maxWidth: 280,
-})
+const props = withDefaults(
+  defineProps<{
+    content: string
+    placement?: 'top' | 'bottom' | 'left' | 'right'
+    trigger?: 'hover' | 'click'
+    maxWidth?: number | string
+  }>(),
+  {
+    placement: 'top',
+    trigger: 'hover',
+    maxWidth: 280
+  }
+)
 
 const visible = ref(false)
-let showTimer: ReturnType<typeof setTimeout> | null = null
-const hideDelay = 150
+const animating = ref(false)
+const wrapperRef = ref<HTMLElement | null>(null)
+const tooltipRef = ref<HTMLElement | null>(null)
+const currentPlacement = ref(props.placement)
 
-const placementProps = computed(() => {
-  const map: Record<string, Record<string, string>> = {
-    top: {
-      positionClass: 'tooltip-top',
-      arrowClass: 'arrow-bottom',
-    },
-    bottom: {
-      positionClass: 'tooltip-bottom',
-      arrowClass: 'arrow-top',
-    },
-    left: {
-      positionClass: 'tooltip-left',
-      arrowClass: 'arrow-right',
-    },
-    right: {
-      positionClass: 'tooltip-right',
-      arrowClass: 'arrow-left',
-    },
-  }
-  return map[props.placement] || map.top
-})
+let showTimeout: ReturnType<typeof setTimeout> | null = null
+let hideTimeout: ReturnType<typeof setTimeout> | null = null
 
-const contentStyle = computed<CSSProperties>(() => {
-  const maxWidth = typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth
-  return { maxWidth }
-})
+const tooltipStyle = ref<Record<string, string>>({ display: 'none' })
+const arrowStyle = ref<Record<string, string>>({})
 
-function showTooltip() {
-  if (showTimer) clearTimeout(showTimer)
-  visible.value = true
+function clearTimers() {
+  if (showTimeout) { clearTimeout(showTimeout); showTimeout = null }
+  if (hideTimeout) { clearTimeout(hideTimeout); hideTimeout = null }
 }
 
-function hideTooltip() {
-  showTimer = setTimeout(() => {
-    visible.value = false
-  }, hideDelay)
+function onMouseEnter() {
+  if (props.trigger !== 'hover') return
+  clearTimers()
+  showTimeout = setTimeout(show, 200)
+}
+
+function onMouseLeave() {
+  if (props.trigger !== 'hover') return
+  clearTimers()
+  hideTimeout = setTimeout(hide, 150)
+}
+
+function onClick() {
+  if (props.trigger !== 'click') return
+  if (visible.value) {
+    hide()
+  } else {
+    show()
+  }
+}
+
+function onDocumentClick(e: MouseEvent) {
+  if (props.trigger !== 'click' || !visible.value) return
+  const wrapper = wrapperRef.value
+  const tooltip = tooltipRef.value
+  if (tooltip && tooltip.contains(e.target as Node)) return
+  if (!wrapper || wrapper.contains(e.target as Node)) return
+  hide()
+}
+
+function onScroll() {
+  if (props.trigger !== 'click' || !visible.value) return
+  hide()
+}
+
+onMounted(() => {
+  document.addEventListener('click', onDocumentClick)
+  document.addEventListener('scroll', onScroll, true)
+  document.addEventListener('wheel', onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', onDocumentClick)
+  document.removeEventListener('scroll', onScroll, true)
+  document.removeEventListener('wheel', onScroll)
+})
+
+const ARROW_SIZE = 8
+const ARROW_HALF = ARROW_SIZE / 2
+const GAP = 4
+
+function show() {
+  visible.value = true
+  currentPlacement.value = props.placement
+  nextTick(() => {
+    updatePosition()
+    animating.value = true
+  })
+}
+
+function hide() {
+  animating.value = false
+  visible.value = false
+}
+
+async function updatePosition() {
+  const wrapper = wrapperRef.value
+  const tooltip = tooltipRef.value
+  if (!wrapper || !tooltip) return
+
+  // Make tooltip lay out naturally but stay hidden for measurement.
+  tooltip.style.display = ''
+  tooltip.style.visibility = 'hidden'
+  tooltip.getBoundingClientRect() // force reflow
+
+  const tooltipRect = tooltip.getBoundingClientRect()
+  const wrapperRect = wrapper.getBoundingClientRect()
+
+  tooltip.style.visibility = ''
+  tooltip.style.display = 'none'
+
+  const placement = currentPlacement.value
+  let top = 0, left = 0
+  let arrowTop = '', arrowLeft = ''
+
+  switch (placement) {
+    case 'top': {
+      left = wrapperRect.left + wrapperRect.width / 2 - tooltipRect.width / 2
+      top = wrapperRect.top - tooltipRect.height - GAP
+      arrowTop = `calc(100% - ${ARROW_HALF}px)`
+      arrowLeft = `${tooltipRect.width / 2 - ARROW_HALF}px`
+      break
+    }
+    case 'bottom': {
+      left = wrapperRect.left + wrapperRect.width / 2 - tooltipRect.width / 2
+      top = wrapperRect.bottom + GAP
+      arrowTop = `${-ARROW_HALF}px`
+      arrowLeft = `${tooltipRect.width / 2 - ARROW_HALF}px`
+      break
+    }
+    case 'left': {
+      left = wrapperRect.left - tooltipRect.width - GAP
+      top = wrapperRect.top + wrapperRect.height / 2 - tooltipRect.height / 2
+      arrowTop = `${tooltipRect.height / 2 - ARROW_HALF}px`
+      arrowLeft = `calc(100% - ${ARROW_HALF}px)`
+      break
+    }
+    case 'right': {
+      left = wrapperRect.right + GAP
+      top = wrapperRect.top + wrapperRect.height / 2 - tooltipRect.height / 2
+      arrowTop = `${tooltipRect.height / 2 - ARROW_HALF}px`
+      arrowLeft = `${-ARROW_HALF}px`
+      break
+    }
+  }
+
+  tooltipStyle.value = {
+    left: `${left}px`,
+    top: `${top}px`,
+    position: 'fixed',
+    display: '',
+    maxWidth: typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth
+  }
+
+  arrowStyle.value = {
+    top: arrowTop,
+    left: arrowLeft
+  }
 }
 </script>
 
 <style scoped>
 .z-tooltip-wrapper {
-  position: relative;
   display: inline-flex;
+  position: relative;
 }
+</style>
 
+<style>
 .z-tooltip {
-  position: absolute;
-  z-index: 1000;
-  pointer-events: none;
-}
-
-.z-tooltip-content {
-  background: #404040;
-  color: #ffffff;
-  font-size: 13px;
+  position: fixed;
+  z-index: 9999;
+  min-width: 40px;
+  padding: 8px 14px;
+  background: #303030;
+  color: #fff;
+  font-size: 12px;
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
   line-height: 1.5;
-  padding: 6px 12px;
   border-radius: 4px;
-  word-wrap: break-word;
-  word-break: break-word;
-  max-width: 280px;
-}
-
-.z-tooltip-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-/* ── Top ── */
-.tooltip-top {
-  bottom: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.tooltip-top .z-tooltip-arrow.arrow-bottom {
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid #404040;
-}
-
-/* ── Bottom ── */
-.tooltip-bottom {
-  top: calc(100% + 5px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.tooltip-bottom .z-tooltip-arrow.arrow-top {
-  bottom: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid #404040;
-}
-
-/* ── Left ── */
-.tooltip-left {
-  right: calc(100% + 5px);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.tooltip-left .z-tooltip-arrow.arrow-right {
-  left: 100%;
-  top: 50%;
-  margin-top: -5px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid #404040;
-}
-
-/* ── Right ── */
-.tooltip-right {
-  left: calc(100% + 5px);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.tooltip-right .z-tooltip-arrow.arrow-left {
-  right: 100%;
-  top: 50%;
-  margin-top: -5px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 5px solid #404040;
-}
-
-/* ── Transition ── */
-.tooltip-fade-enter-active,
-.tooltip-fade-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.tooltip-fade-enter-from,
-.tooltip-fade-leave-to {
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   opacity: 0;
+  transition: opacity 90ms ease;
+}
+.z-tooltip--enter {
+  opacity: 1;
+}
+
+.z-tooltip__content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
+  white-space: pre-line;
+}
+
+.z-tooltip__arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #303030;
+  transform: rotate(45deg);
 }
 </style>
