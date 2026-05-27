@@ -19,3 +19,6 @@ chromium-cache-tmp/
 
 # GitHub Pages deploy artifacts
 /zijid-ui-*.tgz
+
+# Demo lockfile (regenerated in CI for correct platform deps)
+/demo/package-lock.json
