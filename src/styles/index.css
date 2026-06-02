@@ -3,9 +3,11 @@
    ======================================== */
 
 /* Base reset */
-* {
-  margin: 0;
-  padding: 0;
+[class^="z-"], [class*=" z-"] {
+  box-sizing: border-box;
+}
+[class^="z-"]::before, [class*=" z-"]::before,
+[class^="z-"]::after, [class*=" z-"]::after {
   box-sizing: border-box;
 }
 
@@ -18,124 +20,4 @@
   --z-input-bg: #ffffff;
   --z-surface: #f3f2f1;
   --z-input-border-hover: #323130;
-}
-
-/* ========================================
-   ZList - 列表组件
-   ======================================== */
-.z-list {
-  list-style: none;
-  padding: 4px 0;
-  margin: 0;
-  min-width: 160px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 13px;
-  color: var(--z-text);
-  background: #ffffff;
-  border: 1px solid var(--z-border);
-  border-radius: 2px;
-  outline: none;
-}
-
-.z-list__item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  cursor: default;
-  transition: background-color 90ms ease-out;
-  border-radius: 2px;
-  margin: 2px 4px;
-}
-
-.z-list__item:hover {
-  background: #e5f1fb;
-}
-
-.z-list__item--active {
-  background: #cce4f7;
-}
-
-.z-list__item--active:hover {
-  background: #cce4f7;
-}
-
-.z-list__item span {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ========================================
-   ZTree - 树形控件
-   ======================================== */
-.z-tree {
-  list-style: none;
-  padding: 4px 0;
-  margin: 0;
-  min-width: 160px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  font-size: 13px;
-  color: var(--z-text);
-  background: #ffffff;
-  border: 1px solid var(--z-border);
-  border-radius: 2px;
-  outline: none;
-}
-
-.z-tree__node {
-  list-style: none;
-}
-
-.z-tree__row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 4px 8px;
-  margin: 1px 4px;
-  border: none;
-  background: transparent;
-  border-radius: 2px;
-  cursor: default;
-  text-align: left;
-  transition: background-color 90ms ease-out;
-}
-
-.z-tree__row:hover {
-  background: #e5f1fb;
-}
-
-.z-tree__row--active {
-  background: #cce4f7;
-}
-
-.z-tree__row--active:hover {
-  background: #cce4f7;
-}
-
-.z-tree__twisty {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: var(--z-text-muted);
-  cursor: pointer;
-  user-select: none;
-  flex-shrink: 0;
-  opacity: 0.7;
-}
-
-.z-tree__twisty:hover {
-  color: var(--z-text);
-  opacity: 1;
-}
-
-.z-tree__children {
-  list-style: none;
-  padding: 0 0 0 16px;
-  margin: 0;
 }

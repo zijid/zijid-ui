@@ -8,6 +8,7 @@ export type TreeItem = {
 type __VLS_Props = {
     modelValue?: string;
     items: TreeItem[];
+    defaultExpandedIds?: string[];
 };
 declare const _default: import("vue").DefineComponent<__VLS_Props, {}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
     "update:modelValue": (id: string) => any;

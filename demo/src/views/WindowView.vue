@@ -118,13 +118,18 @@ const windowProps = [
   { name: 'maximized', type: 'boolean', default: 'false', description: '窗口是否最大化' },
   { name: 'focused', type: 'boolean', default: '-', description: '窗口是否聚焦' },
   { name: 'zIndex', type: 'number', default: '-', description: '窗口层级索引' },
-  { name: 'draggable', type: 'boolean', default: 'true', description: '窗口是否可拖拽' }
+  { name: 'draggable', type: 'boolean', default: 'true', description: '窗口是否可拖拽' },
+  { name: 'resizable', type: 'boolean', default: 'true', description: '窗口是否可调整大小' },
+  { name: 'minWidth', type: 'number', default: '200', description: '缩放时最小宽度' },
+  { name: 'minHeight', type: 'number', default: '100', description: '缩放时最小高度' },
 ]
 
 const windowEvents = [
   { name: 'update:modelValue', params: ['boolean'], description: '窗口显示状态更新' },
   { name: 'update:minimized', params: ['boolean'], description: '最小化状态更新' },
   { name: 'update:maximized', params: ['boolean'], description: '最大化状态更新' },
+  { name: 'update:width', params: ['number'], description: '窗口宽度更新' },
+  { name: 'update:height', params: ['number'], description: '窗口高度更新' },
   { name: 'close', params: [], description: '窗口关闭时触发' },
   { name: 'minimize', params: [], description: '窗口最小化时触发' },
   { name: 'maximize', params: [], description: '窗口最大化时触发' },
@@ -132,7 +137,10 @@ const windowEvents = [
   { name: 'focus', params: ['zIndex'], description: '窗口聚焦时触发' },
   { name: 'move', params: ['{ x, y }'], description: '窗口移动时触发' },
   { name: 'move-start', params: ['{ x, y }'], description: '窗口开始移动时触发' },
-  { name: 'move-end', params: ['{ x, y }'], description: '窗口结束移动时触发' }
+  { name: 'move-end', params: ['{ x, y }'], description: '窗口结束移动时触发' },
+  { name: 'resize-start', params: [], description: '窗口开始调整大小时触发' },
+  { name: 'resize', params: ['{ width, height }'], description: '窗口调整大小中触发' },
+  { name: 'resize-end', params: ['{ width, height }'], description: '窗口结束调整大小时触发' },
 ]
 
 const windowSlots = [
@@ -141,7 +149,7 @@ const windowSlots = [
 </script>
 
 <style scoped>
-.desktop-area { background: #e8e8e8; border: 2px solid #ccc; border-radius: 6px; width: 100%; height: 400px; position: relative; overflow: hidden; margin-bottom: 32px; }
+.desktop-area { background: #e8e8e8; border: 2px solid #ccc; border-radius: 6px; width: 100%; height: 500px; position: relative; overflow: hidden; margin-bottom: 32px; }
 .desktop-area.multi-window { height: 350px; }
 .window-content { padding: 16px; line-height: 1.6; }
 .window-content h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }

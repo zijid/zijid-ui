@@ -98,8 +98,8 @@ onUnmounted(() => {
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  background: #fafafa;
-  border: 1px solid #c0c0c0;
+  background: #ffffff;
+  border: 1px solid #d2d0ce;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   font-family: 'Segoe UI', system-ui, sans-serif;
@@ -116,15 +116,18 @@ onUnmounted(() => {
 .z-context-menu button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 4px 12px;
+  height: 28px;
+  padding: 0 8px;
+  margin: 1px 4px;
+  border-radius: 2px;
   border: none;
   background: transparent;
   color: #1b1a19;
   font-family: inherit;
   font-size: inherit;
-  line-height: 24px;
+  line-height: 1;
   text-align: left;
   cursor: default;
   outline: none;
@@ -132,10 +135,16 @@ onUnmounted(() => {
   transition: background-color 90ms ease-out;
 }
 .z-context-menu button:hover:not(:disabled) {
-  background: #e5f1fb;
+  background: #2b88d8;
+  color: #ffffff;
 }
 .z-context-menu button:active:not(:disabled) {
-  background: #cce4f7;
+  background: #106ebe;
+  color: #ffffff;
+}
+.z-context-menu button:focus-visible:not(:disabled) {
+  outline: 1px dotted #1b1a19;
+  outline-offset: -3px;
 }
 .z-context-menu button:disabled {
   color: #a19f9d;

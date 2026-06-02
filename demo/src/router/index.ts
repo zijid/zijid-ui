@@ -136,6 +136,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/desktop-icon',
     name: 'DesktopIcon',
     component: () => import('../views/DesktopIconDemo.vue')
+  },
+  {
+    path: '/file-system',
+    name: 'FileSystem',
+    component: () => import('../views/FileSystemDemo.vue')
   }
 ]
 

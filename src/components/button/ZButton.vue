@@ -82,12 +82,14 @@ function handleClick(evt: MouseEvent) {
     border-color 90ms ease-out;
 }
 .z-button:hover:not(:disabled) {
-  background: #e5f1fb;
+  background: #2b88d8;
   border-color: #0078d4;
+  color: #ffffff;
 }
 .z-button:active:not(:disabled) {
-  background: #cce4f7;
-  border-color: #005a9e;
+  background: #106ebe;
+    color: #ffffff;
+border-color: #005a9e;
 }
 .z-button:focus-visible:not(:disabled) {
   border-color: #1b1a19;
@@ -146,8 +148,8 @@ function handleClick(evt: MouseEvent) {
   box-shadow: 0 0 0 2px #0078d4;
 }
 .z-button--primary:disabled {
-  background: #cce4f7;
-  border-color: #cce4f7;
+  background: #106ebe;
+  border-color: #106ebe;
   color: #ffffff;
 }
 

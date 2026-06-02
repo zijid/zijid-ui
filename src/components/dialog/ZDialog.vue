@@ -9,7 +9,7 @@
             {{ title }}
           </span>
           <button class="z-dialog__close" type="button" aria-label="Close" @click="emit('update:modelValue', false)">
-            <ZIcon name="close" :size="12" />
+            <ZIcon name="window-close" :size="18" />
           </button>
         </header>
         <div class="z-dialog__body">
@@ -126,7 +126,7 @@ const primaryButtonType = computed(() => {
   align-items: center;
   justify-content: space-between;
   height: 36px;
-  padding: 0 16px;
+  padding: 0 8px;
   background: linear-gradient(to bottom, #fafafa, #f0f0f0);
   border-bottom: 1px solid #d0d0d0;
   user-select: none;
@@ -145,22 +145,23 @@ const primaryButtonType = computed(() => {
   flex-shrink: 0;
 }
 
+
 .z-dialog__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 46px;
+  height: 32px;
   border: none;
   background: transparent;
-  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: default;
-  border-radius: 2px;
-  transition: background-color 90ms ease-out;
+  transition: background-color 0.2s;
 }
 .z-dialog__close:hover {
   background: #e81123;
-  color: #fff;
+}
+.z-dialog__close:hover .z-icon {
+  stroke: white;
 }
 
 .z-dialog__body {

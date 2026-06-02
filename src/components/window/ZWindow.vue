@@ -5,7 +5,8 @@
     :class="{
       'win10-window--focused': isFocused,
       'win10-window--maximized': isMaximized,
-      'win10-window--minimized': isMinimized
+      'win10-window--minimized': isMinimized,
+      'win10-window--resizing': isResizing
     }"
     ref="windowRef"
     :style="windowStyle"
@@ -15,19 +16,19 @@
   >
     <header class="win10-window__titlebar" @pointerdown="startDrag">
       <div class="win10-window__title"><slot name="title">{{ title }}</slot></div>
-      <div class="win10-window__actions" aria-label="窗口操作">
-        <button class="win10-window__action win10-window__action--minimize" type="button" aria-label="最小化" @click="minimize">
+      <div class="win10-window__actions" aria-label="绐楀彛鎿嶄綔">
+        <button class="win10-window__action win10-window__action--minimize" type="button" aria-label="鏈€灏忓寲" @click="minimize">
           <ZIcon name="window-minimize" :size="18" />
         </button>
         <button
           class="win10-window__action win10-window__action--maximize"
           type="button"
-          :aria-label="isMaximized ? '还原' : '最大化'"
+          :aria-label="isMaximized ? '杩樺師' : '鏈€澶у寲'"
           @click="toggleMaximize"
         >
           <ZIcon :name="isMaximized ? 'window-restore' : 'window-maximize'" :size="18" />
         </button>
-        <button class="win10-window__action win10-window__action--close" type="button" aria-label="关闭" @click="close">
+        <button class="win10-window__action win10-window__action--close" type="button" aria-label="鍏抽棴" @click="close">
           <ZIcon name="window-close" :size="18" />
         </button>
       </div>
@@ -35,6 +36,18 @@
     <div class="win10-window__body">
       <slot />
     </div>
+
+    <!-- Resize handles -->
+    <template v-if="resizable && !isMaximized">
+      <span class="win10-window__handle win10-window__handle--n" data-dir="n" @pointerdown.prevent="startResize($event, 'n')" />
+      <span class="win10-window__handle win10-window__handle--s" data-dir="s" @pointerdown.prevent="startResize($event, 's')" />
+      <span class="win10-window__handle win10-window__handle--e" data-dir="e" @pointerdown.prevent="startResize($event, 'e')" />
+      <span class="win10-window__handle win10-window__handle--w" data-dir="w" @pointerdown.prevent="startResize($event, 'w')" />
+      <span class="win10-window__handle win10-window__handle--ne" data-dir="ne" @pointerdown.prevent="startResize($event, 'ne')" />
+      <span class="win10-window__handle win10-window__handle--nw" data-dir="nw" @pointerdown.prevent="startResize($event, 'nw')" />
+      <span class="win10-window__handle win10-window__handle--se" data-dir="se" @pointerdown.prevent="startResize($event, 'se')" />
+      <span class="win10-window__handle win10-window__handle--sw" data-dir="sw" @pointerdown.prevent="startResize($event, 'sw')" />
+    </template>
   </section>
 </template>
 
@@ -45,6 +58,8 @@ import { globalWindowLayerManager, type WindowLayerEntry } from '../../composabl
 import { generateWindowId } from '../../composables/useWindowId'
 
 defineOptions({ name: 'ZWindow' })
+
+type ResizeDir = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw'
 
 const props = withDefaults(
   defineProps<{
@@ -59,6 +74,9 @@ const props = withDefaults(
     width?: number | string
     height?: number | string
     draggable?: boolean
+    resizable?: boolean
+    minWidth?: number
+    minHeight?: number
   }>(),
   {
     title: 'Window',
@@ -67,6 +85,9 @@ const props = withDefaults(
     maximized: undefined,
     focused: undefined,
     draggable: true,
+    resizable: true,
+    minWidth: 200,
+    minHeight: 100,
     width: 400,
     height: 300
   }
@@ -82,6 +103,8 @@ const emit = defineEmits<{
   'update:zIndex': [value: number]
   'update:x': [value: number]
   'update:y': [value: number]
+  'update:width': [value: number]
+  'update:height': [value: number]
   close: []
   minimize: []
   maximize: []
@@ -91,6 +114,9 @@ const emit = defineEmits<{
   move: [position: { x: number; y: number }]
   'move-start': [position: { x: number; y: number }]
   'move-end': [position: { x: number; y: number }]
+  'resize-start': []
+  resize: [size: { width: number; height: number }]
+  'resize-end': [size: { width: number; height: number }]
 }>()
 
 const internalVisible = ref(true)
@@ -99,9 +125,13 @@ const internalMaximized = ref(false)
 const internalFocused = ref(false)
 const internalX = ref<number | null>(null)
 const internalY = ref<number | null>(null)
+const internalWidth = ref<number | null>(null)
+const internalHeight = ref<number | null>(null)
 const internalZIndex = ref(props.zIndex ?? 0)
 const isDragging = ref(false)
+const isResizing = ref(false)
 const dragStart = ref({ pointerX: 0, pointerY: 0, x: 0, y: 0 })
+const resizeStart = ref({ pointerX: 0, pointerY: 0, x: 0, y: 0, w: 0, h: 0 })
 const windowRef = ref<HTMLElement | null>(null)
 const preMaximizeState = ref<{ x: number; y: number } | null>(null)
 let isRegisteredLayer = false
@@ -110,6 +140,9 @@ const visible = computed(() => props.modelValue ?? internalVisible.value)
 const isMaximized = computed(() => props.maximized ?? internalMaximized.value)
 const isMinimized = computed(() => props.minimized ?? internalMinimized.value)
 const isFocused = computed(() => props.focused ?? internalFocused.value)
+
+const currentWidth = computed(() => internalWidth.value ?? (typeof props.width === 'number' ? props.width : 400))
+const currentHeight = computed(() => internalHeight.value ?? (typeof props.height === 'number' ? props.height : 300))
 
 const layerEntry: WindowLayerEntry = {
   id: instanceId,
@@ -172,8 +205,6 @@ const windowStyle = computed(() => {
   const baseStyle: any = {
     position: 'absolute',
     zIndex: currentZIndex.value,
-    width: isMaximized.value ? 'auto' : (typeof props.width === 'number' ? `${props.width}px` : props.width),
-    height: isMaximized.value ? 'auto' : (typeof props.height === 'number' ? `${props.height}px` : props.height),
     backgroundColor: '#ffffff',
     borderRadius: '4px',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
@@ -191,6 +222,12 @@ const windowStyle = computed(() => {
     baseStyle.right = 'auto'
     baseStyle.bottom = 'auto'
     baseStyle.left = `${currentX.value}px`
+    baseStyle.width = typeof props.width === 'string' && internalWidth.value === null
+      ? props.width
+      : `${currentWidth.value}px`
+    baseStyle.height = typeof props.height === 'string' && internalHeight.value === null
+      ? props.height
+      : `${currentHeight.value}px`
   }
 
   return baseStyle
@@ -218,6 +255,14 @@ function setPosition(x: number, y: number) {
   emit('update:x', x)
   emit('update:y', y)
   emit('move', { x, y })
+}
+
+function setSize(w: number, h: number) {
+  internalWidth.value = w
+  internalHeight.value = h
+  emit('update:width', w)
+  emit('update:height', h)
+  emit('resize', { width: w, height: h })
 }
 
 function startDrag(event: PointerEvent) {
@@ -301,6 +346,83 @@ function stopDrag() {
   window.removeEventListener('pointerup', stopDrag)
   window.removeEventListener('pointercancel', stopDrag)
   emit('move-end', { x: currentX.value, y: currentY.value })
+}
+
+function startResize(event: PointerEvent, dir: ResizeDir) {
+  if (event.button !== 0) return
+
+  focusWindow()
+
+  isResizing.value = true
+  resizeStart.value = {
+    pointerX: event.clientX,
+    pointerY: event.clientY,
+    x: currentX.value,
+    y: currentY.value,
+    w: currentWidth.value,
+    h: currentHeight.value
+  }
+
+  const handleResize = (e: PointerEvent) => doResize(e, dir)
+  const stopResize = () => endResize(handleResize, stopResize)
+
+  window.addEventListener('pointermove', handleResize)
+  window.addEventListener('pointerup', stopResize)
+  window.addEventListener('pointercancel', stopResize)
+
+  emit('resize-start')
+}
+
+function doResize(event: PointerEvent, dir: ResizeDir) {
+  const dx = event.clientX - resizeStart.value.pointerX
+  const dy = event.clientY - resizeStart.value.pointerY
+  let { x, y, w, h } = resizeStart.value
+
+  const includesNorth = dir.includes('n')
+  const includesSouth = dir.includes('s')
+  const includesWest = dir.includes('w')
+  const includesEast = dir.includes('e')
+
+  if (includesEast) {
+    w = Math.max(props.minWidth, resizeStart.value.w + dx)
+  }
+  if (includesWest) {
+    const proposedW = Math.max(props.minWidth, resizeStart.value.w - dx)
+    const actualDx = resizeStart.value.w - proposedW
+    x = resizeStart.value.x + actualDx
+    w = proposedW
+  }
+  if (includesSouth) {
+    h = Math.max(props.minHeight, resizeStart.value.h + dy)
+  }
+  if (includesNorth) {
+    const proposedH = Math.max(props.minHeight, resizeStart.value.h - dy)
+    const actualDy = resizeStart.value.h - proposedH
+    y = resizeStart.value.y + actualDy
+    h = proposedH
+  }
+
+  const el = windowRef.value
+  if (el && el.offsetParent) {
+    const parent = el.offsetParent as HTMLElement
+    x = Math.max(0, Math.min(x, parent.clientWidth - props.minWidth))
+    y = Math.max(0, Math.min(y, parent.clientHeight - props.minHeight))
+    w = Math.min(w, parent.clientWidth - x)
+    h = Math.min(h, parent.clientHeight - y)
+  }
+
+  setPosition(x, y)
+  setSize(w, h)
+}
+
+function endResize(moveHandler: (e: PointerEvent) => void, upHandler: () => void) {
+  if (!isResizing.value) return
+
+  isResizing.value = false
+  window.removeEventListener('pointermove', moveHandler)
+  window.removeEventListener('pointerup', upHandler)
+  window.removeEventListener('pointercancel', upHandler)
+  emit('resize-end', { width: currentWidth.value, height: currentHeight.value })
 }
 
 function close() {
@@ -452,5 +574,78 @@ onUnmounted(() => {
   padding: 12px;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+/* ===== Resize handles ===== */
+
+.win10-window__handle {
+  position: absolute;
+  z-index: 1;
+}
+
+/* Edges - thin invisible hit areas */
+.win10-window__handle--n {
+  top: -4px;
+  left: 4px;
+  right: 4px;
+  height: 8px;
+  cursor: n-resize;
+}
+
+.win10-window__handle--s {
+  bottom: -4px;
+  left: 4px;
+  right: 4px;
+  height: 8px;
+  cursor: s-resize;
+}
+
+.win10-window__handle--e {
+  right: -4px;
+  top: 4px;
+  bottom: 4px;
+  width: 8px;
+  cursor: e-resize;
+}
+
+.win10-window__handle--w {
+  left: -4px;
+  top: 4px;
+  bottom: 4px;
+  width: 8px;
+  cursor: w-resize;
+}
+
+/* Corners - slightly larger hit areas */
+.win10-window__handle--ne {
+  top: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  cursor: ne-resize;
+}
+
+.win10-window__handle--nw {
+  top: -4px;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  cursor: nw-resize;
+}
+
+.win10-window__handle--se {
+  bottom: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  cursor: se-resize;
+}
+
+.win10-window__handle--sw {
+  bottom: -4px;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  cursor: sw-resize;
 }
 </style>

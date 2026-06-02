@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import ZIcon from '../icon/ZIcon.vue'
-import type { ToastEntry } from '../composables/useToast'
+import type { ToastEntry } from '../../composables/useToast'
 
 defineOptions({ name: 'ZToastContainer' })
 

@@ -73,11 +73,12 @@ const emit = defineEmits<{
     background-color 90ms ease-out;
 }
 .z-tabs__tab:hover {
-  background: #e5f1fb;
-  color: #1b1a19;
+  background: #2b88d8;
+  color: #ffffff;
 }
 .z-tabs__tab:active {
-  background: #cce4f7;
+  background: #106ebe;
+  color: #ffffff;
 }
 .z-tabs__tab:focus-visible {
   outline: 1px dotted #1b1a19;

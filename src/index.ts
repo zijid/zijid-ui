@@ -44,6 +44,8 @@ export { useToast } from './composables/useToast'
 export type { ToastOptions } from './composables/useToast'
 export { globalWindowLayerManager, createWindowLayerManager, useWindowLayers } from './composables/useWindowLayers'
 export { generateWindowId } from './composables/useWindowId'
+export { useFileSystem } from './composables/useFileSystem'
+export type { FileSystemOptions } from './composables/useFileSystem'
 
 
 const components = [

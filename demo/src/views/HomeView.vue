@@ -15,6 +15,45 @@
       <ZButton variant="primary" @click="copyInstall">复制安装命令</ZButton>
     </div>
 
+    <!-- 全局注册 -->
+    <div class="guide-section">
+      <h2>全局注册</h2>
+      <p>在 <code>main.ts</code> 中导入并注册整个组件库，所有组件即可在全局使用：</p>
+      <div class="code-wrapper">
+        <ZCodeBlock :code="globalImportCode" language="typescript" />
+      </div>
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <span>全局注册后，所有组件通过 <code>ZButton</code>、<code>ZInput</code> 等名称直接在模板中使用，无需重复导入。</span>
+      </div>
+    </div>
+
+    <!-- 按需导入 -->
+    <div class="guide-section">
+      <h2>按需导入</h2>
+      <p>如果倾向按需导入，可以在组件中直接引入所需模块：</p>
+      <div class="code-wrapper">
+        <ZCodeBlock :code="onDemandImportCode" language="typescript" />
+      </div>
+    </div>
+
+    <!-- 组件使用 -->
+    <div class="guide-section">
+      <h2>组件使用</h2>
+      <p>注册或导入组件后，在模板中直接使用组件标签：</p>
+      <div class="code-wrapper">
+        <ZCodeBlock :code="usageCode" language="vue" />
+      </div>
+      <div class="preview-box-guide">
+        <span class="preview-label">效果预览</span>
+        <div class="preview-row">
+          <ZButton type="primary" icon="star">主要按钮</ZButton>
+          <ZButton>默认按钮</ZButton>
+          <ZInput v-model="demoValue" placeholder="输入示例" />
+        </div>
+      </div>
+    </div>
+
     <!-- 组件展示 -->
     <div class="component-grid">
       <div v-for="component in components" :key="component.name" class="component-card" @click="navigateTo(component.path)">
@@ -39,17 +78,19 @@
           <p>基于 Vue 3 Composition API，轻量且快速</p>
         </div>
         <div class="feature-item">
-          <div class="feature-icon">🔧</div>
+          <div class="feature-icon">🛠</div>
           <h3>易于使用</h3>
           <p>提供完整的 TypeScript 支持，开箱即用</p>
         </div>
         <div class="feature-item">
-          <div class="feature-icon">🎯</div>
+          <div class="feature-icon">🧩</div>
           <h3>组件丰富</h3>
           <p>包含完整的桌面应用组件，满足各种需求</p>
         </div>
       </div>
     </div>
+    <!-- Toast 容器 -->
+    <ZToastContainer :toasts="toasts" :close="close" />
   </div>
 </template>
 
@@ -58,12 +99,46 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ZButton } from 'zijid-ui'
 import { ZCodeBlock } from 'zijid-ui'
+import { ZInput } from 'zijid-ui'
+import { ZToastContainer, useToast } from 'zijid-ui'
 
 const router = useRouter()
+const { toasts, show, close } = useToast()
+
+const demoValue = ref('')
+
+const globalImportCode = `// main.ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import ZijidUI from 'zijid-ui'
+import 'zijid-ui/styles/index.css'
+
+const app = createApp(App)
+app.use(ZijidUI)
+app.mount('#app')`
+
+const onDemandImportCode = `// 在组件中按需导入
+import { ZButton, ZInput, ZDialog } from 'zijid-ui'
+import 'zijid-ui/styles/index.css'
+
+// Vue 3 <script setup> 中直接使用
+// <ZButton type="primary">按钮</ZButton>
+// <ZInput v-model="value" placeholder="输入内容" />`
+
+const usageCode = `<template>
+  <ZButton type="primary" icon="star">主要按钮</ZButton>
+  <ZButton>默认按钮</ZButton>
+  <ZInput v-model="value" placeholder="输入内容" />
+  <ZDialog v-model:visible="visible" title="对话框">
+    对话框内容
+  </ZDialog>
+  <ZCheckbox v-model="checked">选项</ZCheckbox>
+  <ZSelect v-model="selected" :options="options" />
+</template>`
 
 const components = ref([
   { name: 'Button', icon: '🔘', description: '按钮组件', path: '/button' },
-  { name: 'Input', icon: '📝', description: '输入框组件', path: '/input' },
+  { name: 'Input', icon: '📑', description: '输入框组件', path: '/input' },
   { name: 'Select', icon: '📋', description: '选择器组件', path: '/select' },
   { name: 'Checkbox', icon: '☑️', description: '复选框组件', path: '/checkbox' },
   { name: 'Radio', icon: '🔘', description: '单选框组件', path: '/radio' },
@@ -74,24 +149,24 @@ const components = ref([
   { name: 'Search Box', icon: '🔍', description: '搜索框组件', path: '/search-box' },
   { name: 'Dialog', icon: '💬', description: '对话框组件', path: '/dialog' },
   { name: 'Window', icon: '🪟', description: '窗口组件', path: '/window' },
-  { name: 'Tabs', icon: '📑', description: '标签页组件', path: '/tabs' },
+  { name: 'Tabs', icon: '📼', description: '标签页组件', path: '/tabs' },
   { name: 'Icon', icon: '🖼️', description: '图标组件', path: '/icon' },
   { name: 'Tree', icon: '🌳', description: '树形组件', path: '/tree' },
   { name: 'List', icon: '📋', description: '列表组件', path: '/list' },
   { name: 'Menu', icon: '📋', description: '菜单组件', path: '/menu' },
-  { name: 'Dropdown', icon: '📜', description: '下拉组件', path: '/dropdown' },
+  { name: 'Dropdown', icon: '📐', description: '下拉组件', path: '/dropdown' },
   { name: 'Tooltip', icon: '💡', description: '提示组件', path: '/tooltip' },
-  { name: 'Panel', icon: '📦', description: '面板组件', path: '/panel' },
-  { name: 'Toolbar', icon: '🔧', description: '工具栏组件', path: '/toolbar' },
+  { name: 'Panel', icon: '📝', description: '面板组件', path: '/panel' },
+  { name: 'Toolbar', icon: '🛠', description: '工具栏组件', path: '/toolbar' },
   { name: 'Status Bar', icon: '📊', description: '状态栏组件', path: '/status-bar' },
-  { name: 'Scroll Area', icon: '📜', description: '滚动区域组件', path: '/scroll-area' },
+  { name: 'Scroll Area', icon: '📐', description: '滚动区域组件', path: '/scroll-area' },
   { name: 'Context Menu', icon: '📋', description: '右键菜单组件', path: '/context-menu' },
-  { name: 'Splitter', icon: '🔀', description: '分割器组件', path: '/splitter' },
+  { name: 'Splitter', icon: '🔢', description: '分割器组件', path: '/splitter' },
   { name: 'Toast', icon: '🔔', description: '通知组件', path: '/toast' },
   { name: 'Desktop', icon: '🖥️', description: '桌面组件', path: '/desktop' },
   { name: 'Desktop Icon', icon: '📋', description: '桌面图标组件', path: '/desktop-icon' },
-  { name: 'Start Menu', icon: '🎯', description: '开始菜单组件', path: '/start-menu' },
-  { name: 'Taskbar', icon: '⚙️', description: '任务栏组件', path: '/taskbar' },
+  { name: 'Start Menu', icon: '🧩', description: '开始菜单组件', path: '/start-menu' },
+  { name: 'Taskbar', icon: '〰️', description: '任务栏组件', path: '/taskbar' },
 ])
 
 const navigateTo = (path: string) => {
@@ -101,7 +176,7 @@ const navigateTo = (path: string) => {
 const copyInstall = () => {
   const command = 'npm install zijid-ui'
   navigator.clipboard.writeText(command)
-  alert('安装命令已复制到剪贴板')
+  show({ title: '成功', message: '安装命令已复制到剪贴板', type: 'success', duration: 2000 })
 }
 </script>
 
@@ -138,7 +213,7 @@ const copyInstall = () => {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 32px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
@@ -153,6 +228,90 @@ const copyInstall = () => {
   color: #64748b;
   line-height: 1.6;
   margin-bottom: 24px;
+}
+
+.guide-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.guide-section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 12px 0;
+}
+
+.guide-section p {
+  color: #475569;
+  line-height: 1.7;
+  margin: 0 0 16px 0;
+}
+
+.guide-section p code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #0366d6;
+}
+
+.code-wrapper {
+  margin-bottom: 8px;
+}
+
+.tip-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  color: #1e40af;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tip-box code {
+  background: #dbeafe;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.tip-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.preview-box-guide {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.preview-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.preview-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .component-grid {

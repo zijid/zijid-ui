@@ -284,9 +284,10 @@ const hasValue = computed(() => {
 // ── Single select helpers ─────────────────────────────────────
 const selectedOption = computed<SelectOption | undefined>(() => {
   if (props.multiple) return undefined
-  return flatOptions.value.find(
-    (opt): opt is FlatEntry => !opt.isGroup && opt.value === props.modelValue
+  const opt = flatOptions.value.find(
+    (e): e is FlatEntry & { isGroup: false } => !e.isGroup && e.value === props.modelValue
   )
+  return opt ? { label: opt.label, value: opt.value, disabled: opt.disabled } : undefined
 })
 
 const selectedLabel = computed(() => selectedOption.value?.label ?? '')
@@ -807,8 +808,8 @@ onUnmounted(() => {
   gap: 2px;
   height: 22px;
   padding: 0 6px;
-  background: #e5f1fb;
-  border: 1px solid #cce4f7;
+  background: #0078d4;
+  border: 1px solid #106ebe;
   border-radius: 2px;
   font-size: 12px;
   color: #1b1a19;
@@ -828,7 +829,7 @@ onUnmounted(() => {
 }
 
 .z-select__tag-remove:hover {
-  background: #cce4f7;
+  background: #106ebe;
 }
 
 .z-select--disabled .z-select__tag {
@@ -953,11 +954,13 @@ onUnmounted(() => {
 
 .z-select__option:hover,
 .z-select__option.is-highlighted {
-  background: #e5f1fb;
+  background: #2b88d8;
+  color: #ffffff;
 }
 
 .z-select__option:active {
-  background: #cce4f7;
+  background: #106ebe;
+  color: #ffffff;
 }
 
 .z-select__option.is-selected {

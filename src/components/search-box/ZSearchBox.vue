@@ -222,11 +222,13 @@ defineExpose({
 
 .z-search-box__option:hover,
 .z-search-box__option.is-highlighted {
-  background: #e5f1fb;
+  background: #2b88d8;
+  color: #ffffff;
 }
 
 .z-search-box__option:active {
-  background: #cce4f7;
+  background: #106ebe;
+  color: #ffffff;
 }
 
 .z-search-box__option-icon {

@@ -172,7 +172,8 @@ const desktopComponents = [
 
 const utilityComponents = [
   { name: 'Search Box', path: '/search-box', icon: 'search' },
-  { name: 'Code Block', path: '/code-block', icon: 'code' }
+  { name: 'Code Block', path: '/code-block', icon: 'code' },
+  { name: 'File System', path: '/file-system', icon: 'folder' }
 ]
 
 const navigateTo = (path: string) => {
