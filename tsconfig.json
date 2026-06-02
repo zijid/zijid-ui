@@ -16,9 +16,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "types": ["node"],
-    "baseUrl": ".",
     "paths": {
-      "zijid-ui": ["src/index.ts"]
+      "zijid-ui": ["./src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue", "demo/**/*.ts", "demo/**/*.vue"],

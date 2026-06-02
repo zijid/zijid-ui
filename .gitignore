@@ -9,21 +9,12 @@ yarn-error.log*
 pnpm-debug.log*
 
 **/screenshots/
-tooltip-*.png
-
+*.png
 # Junk / drafts
-下次提示词.md
-tooltip-preview.png
 test_tooltip.cjs
 settings.json
 build.sh
 build.bat
-demo/vite-err.txt
-demo/vite-log.txt
-demo/vite.config.ts.disabled
-demo/vite.config.mjs.bak
-demo/SimpleWindowDemo.vue
-demo/src/views/WindowView_utf8.vue
 
 .ms-playwright/
 .tmp_extract/
@@ -36,3 +27,5 @@ chromium-cache-tmp/
 
 # Demo lockfile (regenerated in CI for correct platform deps)
 /demo/package-lock.json
+.vscode
+demo/.vscode
