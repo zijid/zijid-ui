@@ -1,0 +1,7 @@
+import{d as _,c as n,a as s,t as d,u as t,D as l,F as m,r as u,b as i,Z as f,o as c,E as v,k as g}from"./index-DytvuLaL.js";import{A as h}from"./ApiTable-YVgjCaIY.js";const y={class:"demo-page"},I={class:"desc"},b={class:"demo-section"},k={class:"preview-box",style:{display:"block"}},w={class:"icon-grid"},x=["onClick","title"],N={class:"icon-box"},Z={class:"icon-label"},z={class:"demo-section"},C=`<ZIcon name="home" :size="24" />
+<ZIcon name="settings" color="#0078d7" :size="32" />
+
+<script setup>
+import { ZIcon } from 'zijid-ui'
+<\/script>`,B=_({__name:"IconView",setup(V){const r=async a=>{try{await navigator.clipboard.writeText(a)}catch{}},p=[{name:"name",type:"IconName",default:"-",description:"图标名称（必填），可从 iconNames 获取完整列表"},{name:"size",type:"number",default:"16",description:"图标尺寸"},{name:"color",type:"string",default:"-",description:"图标颜色"}];return(a,e)=>(c(),n("div",y,[e[2]||(e[2]=s("h1",null,"ZIcon 图标库",-1)),s("p",I,"内置 "+d(t(l).length)+" 个 Windows 10 风格图标。点击图标即可复制名称。",1),s("div",b,[e[0]||(e[0]=s("h2",null,"全部图标",-1)),s("div",k,[s("div",w,[(c(!0),n(m,null,u(t(l),o=>(c(),n("div",{key:o,class:"icon-item",onClick:A=>r(o),title:"复制: "+o},[s("div",N,[i(t(v),{name:o,size:24},null,8,["name"])]),s("span",Z,d(o),1)],8,x))),128))])]),i(t(f),{code:C,language:"vue"})]),s("div",z,[e[1]||(e[1]=s("h2",null,"API 参考",-1)),i(h,{props:p})])]))}}),F=g(B,[["__scopeId","data-v-2c61a1e7"]]);export{F as default};
+//# sourceMappingURL=IconView-ZcLSQpWN.js.map
